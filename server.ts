@@ -83,6 +83,19 @@ async function startServer() {
       appType: "spa",
     });
     app.use(vite.middlewares);
+    
+    // Fallback for SPA in dev mode
+    app.get('*', async (req, res, next) => {
+      const url = req.originalUrl;
+      try {
+        let template = await (await import('fs')).readFileSync(path.resolve(process.cwd(), 'index.html'), 'utf-8');
+        template = await vite.transformIndexHtml(url, template);
+        res.status(200).set({ 'Content-Type': 'text/html' }).end(template);
+      } catch (e) {
+        vite.ssrFixStacktrace(e as Error);
+        next(e);
+      }
+    });
   } else {
     // In production, serve static files from dist
     app.use(express.static(staticPath, {
@@ -91,14 +104,14 @@ async function startServer() {
       index: false // Don't serve index.html automatically here
     }));
 
-    // Fallback for SPA: serve index.html only for non-asset requests
-    app.get('*', (req, res) => {
-      // If the request looks like an asset (has an extension), return 404
-      if (req.path.includes('.')) {
-        return res.status(404).send('Not found');
-      }
-      res.sendFile(path.join(staticPath, 'index.html'));
-    });
+  // Fallback for SPA: serve index.html only for non-asset requests
+  app.get('*', (req, res) => {
+    // If the request looks like an asset (has an extension), return 404 with plain text
+    if (req.path.includes('.') && !req.path.endsWith('.html')) {
+      return res.status(404).type('text/plain').send('Not found');
+    }
+    res.sendFile(path.join(staticPath, 'index.html'));
+  });
   }
 
   app.listen(PORT, "0.0.0.0", () => {
