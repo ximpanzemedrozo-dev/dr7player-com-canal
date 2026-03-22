@@ -76,20 +76,28 @@ async function startServer() {
     res.send(`SERVER IS ALIVE! Mode: ${process.env.NODE_ENV}. Path: ${staticPath}`);
   });
 
-  app.use(express.static(staticPath));
-
   // Vite middleware for development
-  if (process.env.NODE_ENV !== "production") {
+  if (!isProd) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
+    // In production, serve static files from dist
+    app.use(express.static(staticPath, {
+      maxAge: '1d',
+      immutable: true,
+      index: false // Don't serve index.html automatically here
+    }));
+
+    // Fallback for SPA: serve index.html only for non-asset requests
     app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
+      // If the request looks like an asset (has an extension), return 404
+      if (req.path.includes('.')) {
+        return res.status(404).send('Not found');
+      }
+      res.sendFile(path.join(staticPath, 'index.html'));
     });
   }
 
