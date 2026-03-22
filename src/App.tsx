@@ -705,9 +705,18 @@ export default function App() {
   if (loading) {
     return (
       <div className="fixed inset-0 bg-slate-950 flex flex-col items-center justify-center text-white z-50 p-6 overflow-hidden">
+        {/* Animated Background Layers */}
+        <div className="absolute inset-0 z-0 opacity-10">
+          <img 
+            src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueXp4bmZ6Z3Z6Z3Z6Z3Z6Z3Z6Z3Z6Z3Z6Z3Z6Z3Z6Z3Z/3o7TKMGpxx6fGfXfG/giphy.gif" 
+            className="w-full h-full object-cover grayscale"
+            alt=""
+          />
+        </div>
+
         {/* Animated Geometric Background */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(20)].map((_, i) => (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
+          {[...Array(15)].map((_, i) => (
             <motion.div
               key={i}
               initial={{ 
@@ -720,17 +729,16 @@ export default function App() {
                 x: [null, Math.random() * 100 + "%"],
                 y: [null, Math.random() * 100 + "%"],
                 rotate: [0, 360],
-                opacity: [0.1, 0.2, 0.1]
+                opacity: [0.1, 0.3, 0.1]
               }}
               transition={{ 
-                duration: 10 + Math.random() * 20, 
+                duration: 15 + Math.random() * 20, 
                 repeat: Infinity, 
                 ease: "linear" 
               }}
-              className="absolute w-32 h-32 border border-white/10 rounded-3xl"
+              className="absolute w-40 h-40 border-2 border-orange-500/20 rounded-3xl"
               style={{
                 borderRadius: i % 2 === 0 ? "30% 70% 70% 30% / 30% 30% 70% 70%" : "50%",
-                background: i % 3 === 0 ? "linear-gradient(45deg, rgba(249,115,22,0.05), transparent)" : "transparent"
               }}
             />
           ))}
@@ -739,24 +747,35 @@ export default function App() {
         <motion.div 
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="text-center"
+          className="text-center relative z-20"
         >
-          <div className="w-40 h-40 bg-orange-500 rounded-[2.5rem] flex items-center justify-center mx-auto mb-12 shadow-[0_0_80px_rgba(249,115,22,0.3)]">
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.05, 1],
+              rotate: [0, 1, -1, 0]
+            }}
+            transition={{ 
+              duration: 4, 
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="w-40 h-40 bg-orange-500 rounded-[2.5rem] flex items-center justify-center mx-auto mb-12 shadow-[0_0_80px_rgba(249,115,22,0.4)]"
+          >
             <Tv className="w-20 h-20 text-white" />
-          </div>
-          <h2 className="text-6xl font-black uppercase tracking-tighter mb-6">
+          </motion.div>
+          <h2 className="text-4xl md:text-7xl font-black uppercase tracking-tighter mb-6 text-shadow-xl">
             {isParsing ? "Processando Lista" : "Sincronizando"}
           </h2>
-          <p className="text-slate-400 text-3xl font-medium italic">
+          <p className="text-slate-400 text-xl md:text-3xl font-medium italic">
             {isParsing 
               ? "Isso pode levar alguns segundos para listas grandes..." 
               : "\"Estou atualizando seus conteúdos, já continuamos\""}
           </p>
-          <div className="mt-16 h-3 w-80 bg-slate-900 rounded-full mx-auto overflow-hidden border border-white/5">
+          <div className="mt-16 h-4 w-80 bg-slate-900 rounded-full mx-auto overflow-hidden border border-white/10 shadow-inner">
             <motion.div 
               animate={{ x: ["-100%", "100%"] }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-              className="h-full w-1/2 bg-orange-500 rounded-full shadow-[0_0_20px_rgba(249,115,22,0.5)]"
+              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+              className="h-full w-1/2 bg-gradient-to-r from-orange-600 to-orange-400 rounded-full shadow-[0_0_30px_rgba(249,115,22,0.6)]"
             />
           </div>
         </motion.div>
@@ -782,7 +801,7 @@ export default function App() {
                 animate={{ x: 0 }}
                 exit={{ x: "-100%" }}
                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className={`fixed left-0 top-0 bottom-0 ${deviceMode === "android" ? "w-96" : "w-80"} bg-slate-900 border-r border-white/10 z-[101] shadow-2xl flex flex-col`}
+                className={`fixed left-0 top-0 bottom-0 ${deviceMode === "android" ? "w-72 md:w-96" : "w-64 md:w-80"} bg-slate-900 border-r border-white/10 z-[101] shadow-2xl flex flex-col`}
               >
                 <div className="p-8 flex items-center justify-between border-b border-white/5">
                   <h2 className={`text-2xl font-black text-orange-500 ${deviceMode === "android" ? "text-3xl" : ""}`}>D7 PLAYER</h2>
@@ -922,21 +941,21 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 className="max-w-7xl mx-auto h-full flex flex-col justify-center"
               >
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+                <div className="grid grid-cols-3 gap-4 md:gap-12">
                   {[
-                    { id: "live", title: "Canais TV", icon: Tv, color: "from-orange-500 to-orange-600", action: () => { setActiveSection("live"); setCurrentView("content"); } },
+                    { id: "live", title: "TV", icon: Tv, color: "from-orange-500 to-orange-600", action: () => { setActiveSection("live"); setCurrentView("content"); } },
                     { id: "movies", title: "Filmes", icon: Film, color: "from-blue-500 to-blue-600", action: () => { setActiveSection("movies"); setCurrentView("content"); } },
                     { id: "series", title: "Séries", icon: Clapperboard, color: "from-purple-500 to-purple-600", action: () => { setActiveSection("series"); setCurrentView("content"); } }
                   ].map((item) => (
                     <button
                       key={item.id}
                       onClick={item.action}
-                      className={`group relative aspect-[16/11] bg-slate-900 rounded-[3rem] md:rounded-[4rem] overflow-hidden border-2 border-white/5 hover:border-orange-500 transition-all shadow-2xl flex flex-col items-center justify-center p-6 md:p-10 ${deviceMode === "android" ? "scale-105" : ""}`}
+                      className={`group relative aspect-[4/5] sm:aspect-square md:aspect-[16/14] bg-slate-900 rounded-[1.5rem] sm:rounded-[3rem] md:rounded-[4rem] border-2 border-white/5 hover:border-orange-500 transition-all shadow-2xl flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 ${deviceMode === "android" ? "scale-105" : ""}`}
                     >
-                      <div className={`w-24 h-24 md:w-36 md:h-36 bg-gradient-to-br ${item.color} rounded-[2rem] md:rounded-[3rem] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500 shrink-0`}>
-                        <item.icon className="w-12 h-12 md:w-20 md:h-20 text-white" />
+                      <div className={`w-14 h-14 sm:w-24 sm:h-24 md:w-36 md:h-36 bg-gradient-to-br ${item.color} rounded-[1.25rem] sm:rounded-[2rem] md:rounded-[3rem] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500 shrink-0`}>
+                        <item.icon className="w-7 h-7 sm:w-12 sm:h-12 md:w-20 md:h-20 text-white" />
                       </div>
-                      <h3 className={`font-black tracking-tight uppercase mt-6 md:mt-10 ${deviceMode === "android" ? "text-3xl md:text-5xl" : "text-2xl md:text-4xl"}`}>{item.title}</h3>
+                      <h3 className={`font-black tracking-tight uppercase mt-4 sm:mt-6 md:mt-10 leading-none text-center ${deviceMode === "android" ? "text-lg sm:text-3xl md:text-5xl" : "text-sm sm:text-2xl md:text-4xl"}`}>{item.title}</h3>
                     </button>
                   ))}
                 </div>
@@ -950,7 +969,7 @@ export default function App() {
                 className="max-w-4xl mx-auto space-y-12"
               >
                 <h2 className="text-4xl md:text-5xl font-black mb-12">Configurações</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-2 gap-8">
                   <div className="bg-slate-900/50 p-8 rounded-[2.5rem] border border-white/5 space-y-6">
                     <div className="flex items-center gap-4 text-orange-500">
                       <MonitorPlay className="w-8 h-8" />
@@ -1097,7 +1116,7 @@ export default function App() {
                   <div className="bg-slate-900/50 p-8 rounded-[2.5rem] border border-white/5 space-y-6">
                     <div className="flex items-center gap-4 text-orange-500">
                       <Hash className="w-8 h-8" />
-                      <h3 className="text-2xl font-bold">Canais</h3>
+                      <h3 className="text-2xl font-bold">TV</h3>
                     </div>
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
@@ -1152,7 +1171,7 @@ export default function App() {
                 
                 <div className="absolute left-1/2 -translate-x-1/2 text-center">
                   <p className="text-xl md:text-3xl font-black text-white uppercase tracking-tighter">
-                    {activeSection === "live" ? "Canais" : activeSection === "movies" ? "Filmes" : "Séries"} | <span className="text-blue-400">{selectedGroup}</span>
+                    {activeSection === "live" ? "TV" : activeSection === "movies" ? "Filmes" : "Séries"} | <span className="text-blue-400">{selectedGroup}</span>
                   </p>
                   <p className="text-[10px] uppercase tracking-[0.5em] text-slate-500 font-black hidden md:block">Navegação</p>
                 </div>
@@ -1194,7 +1213,7 @@ export default function App() {
                         onClick={() => setSelectedChannel(channel)}
                         className={`group relative flex flex-col bg-slate-900/40 border-2 rounded-2xl overflow-hidden transition-all ${selectedChannel?.url === channel.url ? "border-blue-500 shadow-lg" : "border-white/5 hover:border-white/20"}`}
                       >
-                        <div className="aspect-video bg-slate-950/80 flex items-center justify-center p-4 relative">
+                        <div className="aspect-video bg-slate-950/80 flex items-center justify-center p-2 md:p-4 relative">
                           {localStorage.getItem("iptv_show_numbers") && channel.number && (
                             <div className="absolute top-2 left-2 bg-orange-500 text-white text-[10px] font-black px-2 py-1 rounded-lg z-10 shadow-lg">
                               #{channel.number}
@@ -1224,8 +1243,8 @@ export default function App() {
                             <Tv className="w-12 h-12 text-slate-800" />
                           )}
                         </div>
-                        <div className="p-3 bg-slate-900/90 border-t border-white/5 min-h-[60px] flex items-center justify-center">
-                          <p className="text-xs font-black text-center uppercase tracking-tighter line-clamp-2">{channel.name}</p>
+                        <div className="p-2 md:p-3 bg-slate-900/90 border-t border-white/5 min-h-[40px] md:min-h-[60px] flex items-center justify-center">
+                          <p className="text-[10px] md:text-xs font-black text-center uppercase tracking-tighter line-clamp-2 leading-tight">{channel.name}</p>
                         </div>
                       </motion.button>
                     ))}
