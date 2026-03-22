@@ -71,6 +71,7 @@ export default function App() {
   const [aiLog, setAiLog] = useState<string[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [isLandscape, setIsLandscape] = useState(false);
   const [lowPerformanceMode, setLowPerformanceMode] = useState(false);
   const [dialedNumber, setDialedNumber] = useState("");
   const [customChannelNumbers, setCustomChannelNumbers] = useState<Record<string, number>>({});
@@ -121,9 +122,13 @@ export default function App() {
 
   // Check for saved session and favorites
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+      setIsLandscape(window.innerWidth > window.innerHeight);
+    };
     checkMobile();
     window.addEventListener('resize', checkMobile);
+    window.addEventListener('orientationchange', checkMobile);
     
     const saved = localStorage.getItem("iptv_session");
     const savedFavs = localStorage.getItem("iptv_favorites");
@@ -699,9 +704,10 @@ export default function App() {
 
   // Main App UI (Netflix Style)
   return (
-    <div className="min-h-screen bg-slate-950 text-white font-sans flex overflow-hidden">
-      {/* Sidebar Navigation - Collapsible */}
-      <div className={`${isSidebarOpen ? "w-24" : "w-0 overflow-hidden"} bg-slate-900 border-r border-white/10 flex flex-col items-center py-8 gap-8 z-40 transition-all duration-300 relative`}>
+    <div className={`h-[100dvh] bg-slate-950 text-white font-sans flex ${isMobile ? "flex-col" : "flex-row"} overflow-hidden safe-top safe-bottom`}>
+      {/* Sidebar Navigation - Collapsible (Hidden on Mobile/Landscape) */}
+      {!isMobile && (
+        <div className={`${isSidebarOpen ? "w-24" : "w-0 overflow-hidden"} bg-slate-900 border-r border-white/10 flex flex-col items-center py-8 gap-8 z-40 transition-all duration-300 relative`}>
         <div className="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/30">
           <Tv className="w-8 h-8 text-white" />
         </div>
@@ -764,8 +770,50 @@ export default function App() {
           <LogOut className="w-8 h-8" />
         </button>
       </div>
+    )}
 
-      <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
+      {/* Bottom Navigation for Mobile/Landscape */}
+      {isMobile && (
+        <div className="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-white/10 flex justify-around items-center py-3 z-50 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+          <button 
+            onClick={() => setCurrentView("dashboard")}
+            className={`flex flex-col items-center gap-1 ${currentView === "dashboard" ? "text-orange-500" : "text-slate-400"}`}
+          >
+            <LayoutGrid className="w-6 h-6" />
+            <span className="text-[10px] font-bold uppercase">Home</span>
+          </button>
+          <button 
+            onClick={() => { setActiveSection("live"); setActiveTab("all"); setCurrentView("content"); }}
+            className={`flex flex-col items-center gap-1 ${activeSection === "live" && currentView === "content" ? "text-orange-500" : "text-slate-400"}`}
+          >
+            <Tv className="w-6 h-6" />
+            <span className="text-[10px] font-bold uppercase">TV</span>
+          </button>
+          <button 
+            onClick={() => { setActiveSection("movies"); setActiveTab("all"); setCurrentView("content"); }}
+            className={`flex flex-col items-center gap-1 ${activeSection === "movies" && currentView === "content" ? "text-orange-500" : "text-slate-400"}`}
+          >
+            <Film className="w-6 h-6" />
+            <span className="text-[10px] font-bold uppercase">Filmes</span>
+          </button>
+          <button 
+            onClick={() => { setActiveSection("series"); setActiveTab("all"); setCurrentView("content"); }}
+            className={`flex flex-col items-center gap-1 ${activeSection === "series" && currentView === "content" ? "text-orange-500" : "text-slate-400"}`}
+          >
+            <Clapperboard className="w-6 h-6" />
+            <span className="text-[10px] font-bold uppercase">Séries</span>
+          </button>
+          <button 
+            onClick={() => setCurrentView("settings")}
+            className={`flex flex-col items-center gap-1 ${currentView === "settings" ? "text-orange-500" : "text-slate-400"}`}
+          >
+            <Settings className="w-6 h-6" />
+            <span className="text-[10px] font-bold uppercase">Ajustes</span>
+          </button>
+        </div>
+      )}
+
+      <main className={`flex-1 flex flex-col h-full overflow-hidden relative ${isMobile ? "pb-20" : ""}`}>
         {/* Dialing Overlay */}
         <AnimatePresence>
           {isDialing && (
@@ -913,15 +961,17 @@ export default function App() {
         </AnimatePresence>
 
         {/* Top Bar */}
-        <header className="p-4 md:p-8 flex items-center justify-between bg-gradient-to-b from-slate-900 to-transparent">
-          <div className="flex items-center gap-4 md:gap-6">
-            <button 
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all"
-            >
-              <Menu className="w-6 h-6 text-slate-400" />
-            </button>
-            <h2 className="text-xl md:text-3xl font-black tracking-tight truncate max-w-[150px] md:max-w-none">D7 Player</h2>
+        <header className={`p-4 md:p-8 flex items-center justify-between bg-gradient-to-b from-slate-900 to-transparent ${isMobile ? "py-3" : ""} pt-[calc(1rem+env(safe-area-inset-top))]`}>
+          <div className="flex items-center gap-3 md:gap-6">
+            {!isMobile && (
+              <button 
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="p-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all"
+              >
+                <Menu className="w-6 h-6 text-slate-400" />
+              </button>
+            )}
+            <h2 className={`font-black tracking-tight truncate ${isMobile ? "text-xl" : "text-3xl"} max-w-[120px] md:max-w-none`}>D7 Player</h2>
             {!isMobile && (
               <div className="flex items-center gap-3">
                 <div className="px-4 py-1.5 rounded-full bg-orange-500 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-orange-500/20">
@@ -934,8 +984,9 @@ export default function App() {
               </div>
             )}
           </div>
-          <div className="flex items-center gap-4 md:gap-6">
-            <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-6">
+            <div className="flex items-center gap-2 md:gap-3">
+              {/* Desktop Search */}
               <div className="relative hidden md:block">
                 <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-400" />
                 <input 
@@ -946,28 +997,37 @@ export default function App() {
                   className="bg-slate-900 border-2 border-white/10 rounded-2xl py-4 pl-14 pr-8 w-64 lg:w-96 text-lg outline-none focus:border-orange-500 transition-all placeholder:text-slate-600"
                 />
               </div>
+              {/* Mobile Search Button */}
+              {isMobile && (
+                <button 
+                  onClick={() => { setCurrentView("content"); setActiveTab("all"); }}
+                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 text-slate-400 hover:text-orange-500 transition-all"
+                >
+                  <Search className="w-5 h-5" />
+                </button>
+              )}
               <button 
                 onClick={() => setIsDialing(true)}
-                className="p-4 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 text-slate-400 hover:text-orange-500 transition-all"
+                className="p-3 md:p-4 bg-white/5 hover:bg-white/10 rounded-xl md:rounded-2xl border border-white/10 text-slate-400 hover:text-orange-500 transition-all"
                 title="Digitar número do canal"
               >
-                <Hash className="w-6 h-6" />
+                <Hash className="w-5 h-5 md:w-6 md:h-6" />
               </button>
             </div>
             {lowPerformanceMode ? (
               <button 
                 onClick={toggleLowPerf}
-                className="px-3 py-1 bg-orange-500 text-white text-[10px] font-black rounded-lg border border-orange-400 shadow-lg shadow-orange-500/20 flex items-center gap-2"
+                className="px-2 py-1 md:px-3 md:py-1 bg-orange-500 text-white text-[8px] md:text-[10px] font-black rounded-lg border border-orange-400 shadow-lg shadow-orange-500/20 flex items-center gap-1 md:gap-2"
               >
-                <Zap className="w-3 h-3 fill-current" />
+                <Zap className="w-2 h-2 md:w-3 md:h-3 fill-current" />
                 LITE ON
               </button>
             ) : (
               <button 
                 onClick={toggleLowPerf}
-                className="px-3 py-1 bg-white/5 text-slate-400 text-[10px] font-black rounded-lg border border-white/10 hover:bg-white/10 transition-all flex items-center gap-2"
+                className="px-2 py-1 md:px-3 md:py-1 bg-white/5 text-slate-400 text-[8px] md:text-[10px] font-black rounded-lg border border-white/10 hover:bg-white/10 transition-all flex items-center gap-1 md:gap-2"
               >
-                <ZapOff className="w-3 h-3" />
+                <ZapOff className="w-2 h-2 md:w-3 md:h-3" />
                 LITE OFF
               </button>
             )}
@@ -976,13 +1036,25 @@ export default function App() {
 
         <div className="flex-1 flex overflow-hidden">
           {currentView === "dashboard" ? (
-            <div className="flex-1 p-12 overflow-y-auto">
+            <div className={`flex-1 ${isMobile ? "p-4" : "p-12"} overflow-y-auto flex flex-col justify-center`}>
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="max-w-6xl mx-auto space-y-12"
+                className="max-w-6xl mx-auto w-full space-y-8 md:space-y-12"
               >
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {/* Hero section for mobile to fill space */}
+                {isMobile && (
+                  <div className="bg-gradient-to-br from-orange-500 to-orange-700 rounded-3xl p-8 shadow-2xl shadow-orange-500/20 relative overflow-hidden">
+                    <div className="relative z-10">
+                      <h1 className="text-3xl font-black mb-2">Bem-vindo!</h1>
+                      <p className="text-white/80 font-medium">Escolha uma categoria abaixo para começar a assistir.</p>
+                    </div>
+                    {/* Reduced opacity and adjusted position to avoid overlap confusion */}
+                    <Tv className="absolute -right-6 -bottom-6 w-40 h-40 text-white/5 rotate-12 pointer-events-none" />
+                  </div>
+                )}
+
+                <div className={`grid ${isMobile && !isLandscape ? "grid-cols-1" : "grid-cols-3"} gap-4 md:gap-6`}>
                   {[
                     { id: "live", title: "Canais", icon: Tv, color: "from-orange-500 to-orange-600" },
                     { id: "movies", title: "Filmes", icon: Film, color: "from-blue-500 to-blue-600" },
@@ -991,12 +1063,12 @@ export default function App() {
                     <button
                       key={item.id}
                       onClick={() => { setActiveSection(item.id as any); setCurrentView("content"); }}
-                      className="group relative aspect-[4/5] bg-slate-900 rounded-[3.5rem] overflow-hidden border-2 border-white/5 hover:border-orange-500 transition-all shadow-2xl flex flex-col items-center justify-center gap-8"
+                      className={`group relative ${isMobile && !isLandscape ? "h-40" : isMobile && isLandscape ? "aspect-video" : "aspect-[4/5]"} bg-slate-900 rounded-3xl md:rounded-[3.5rem] overflow-hidden border-2 border-white/5 hover:border-orange-500 transition-all shadow-2xl flex ${isMobile && !isLandscape ? "flex-row px-8" : "flex-col"} items-center justify-center gap-4 md:gap-8`}
                     >
-                      <div className={`w-32 h-32 bg-gradient-to-br ${item.color} rounded-[2.5rem] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500`}>
-                        <item.icon className="w-16 h-16 text-white" />
+                      <div className={`${isMobile ? "w-16 h-16 rounded-2xl" : "w-32 h-32 rounded-[2.5rem]"} bg-gradient-to-br ${item.color} flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500 shrink-0`}>
+                        <item.icon className={`${isMobile ? "w-8 h-8" : "w-16 h-16"} text-white`} />
                       </div>
-                      <h3 className="text-4xl font-black tracking-tight">{item.title}</h3>
+                      <h3 className={`${isMobile ? "text-2xl" : "text-4xl"} font-black tracking-tight`}>{item.title}</h3>
                       <div className="absolute inset-0 bg-gradient-to-t from-orange-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     </button>
                   ))}
@@ -1004,13 +1076,13 @@ export default function App() {
               </motion.div>
             </div>
           ) : currentView === "settings" ? (
-            <div className="flex-1 p-12 overflow-y-auto">
+            <div className={`flex-1 ${isMobile ? "p-4" : "p-12"} overflow-y-auto`}>
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="max-w-4xl mx-auto space-y-12"
+                className="max-w-4xl mx-auto space-y-8 md:space-y-12"
               >
-                <h2 className="text-5xl font-black mb-12">Configurações</h2>
+                <h2 className={`${isMobile ? "text-3xl" : "text-5xl"} font-black mb-6 md:mb-12`}>Configurações</h2>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="bg-slate-900/50 p-8 rounded-[2.5rem] border border-white/5 space-y-6">
@@ -1217,70 +1289,75 @@ export default function App() {
               <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-400/10 blur-[120px] rounded-full pointer-events-none" />
               
               {/* IPTV Top Bar */}
-              <div className="h-28 border-b border-white/10 flex items-center justify-between px-12 z-10 bg-slate-950/40 backdrop-blur-md">
+              <div className={`${isMobile ? "h-20 px-4" : "h-28 px-12"} border-b border-white/10 grid grid-cols-3 items-center z-10 bg-slate-950/40 backdrop-blur-md pt-[env(safe-area-inset-top)]`}>
                 <div className="flex flex-col">
-                  <span className="text-4xl font-black tracking-tighter">
+                  <span className={`${isMobile ? "text-xl" : "text-4xl"} font-black tracking-tighter`}>
                     {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                   </span>
-                  <span className="text-sm text-slate-400 font-bold capitalize">
+                  <span className={`${isMobile ? "text-[10px]" : "text-sm"} text-slate-400 font-bold capitalize`}>
                     {currentTime.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })}
                   </span>
                 </div>
                 
-                <div className="absolute left-1/2 -translate-x-1/2">
-                  <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center border-4 border-white/20 shadow-[0_0_40px_rgba(59,130,246,0.5)]">
-                    <Tv className="w-10 h-10 text-white" />
+                <div className="flex flex-col items-center justify-center text-center">
+                  <div className="flex items-center gap-2 text-blue-400 font-black uppercase tracking-widest text-[10px] md:text-sm mb-1">
+                    <span>{activeSection === "live" ? "Canais" : activeSection === "movies" ? "Filmes" : "Séries"}</span>
+                    <span className="text-white/30">/</span>
+                    <span className="text-white">{selectedGroup}</span>
                   </div>
+                  <h3 className={`${isMobile ? "text-lg" : "text-3xl"} font-black uppercase tracking-tighter text-white truncate max-w-[200px] md:max-w-md`}>
+                    {selectedGroup}
+                  </h3>
                 </div>
 
-                <div className="flex items-center gap-10">
-                  <div className="text-right">
-                    <p className="text-2xl font-black text-slate-200">Canais | <span className="text-blue-400">{selectedGroup}</span></p>
-                    <p className="text-[10px] uppercase tracking-[0.4em] text-slate-500 font-black mt-1">Categories</p>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <button className="p-3 hover:bg-white/10 rounded-2xl transition-all border border-white/5 group">
+                <div className="flex items-center justify-end gap-2 md:gap-10">
+                  <div className="flex items-center gap-2 md:gap-4">
+                    <button className="p-2 md:p-3 hover:bg-white/10 rounded-xl md:rounded-2xl transition-all border border-white/5 group">
                       <div className="flex flex-col items-center leading-none">
-                        <span className="text-xs font-black group-hover:text-blue-400">A</span>
-                        <div className="h-[2px] w-4 bg-white/20 my-1" />
-                        <span className="text-xs font-black group-hover:text-blue-400">Z</span>
+                        <span className="text-[10px] md:text-xs font-black group-hover:text-blue-400">A</span>
+                        <div className="h-[1px] md:h-[2px] w-3 md:w-4 bg-white/20 my-0.5 md:my-1" />
+                        <span className="text-[10px] md:text-xs font-black group-hover:text-blue-400">Z</span>
                       </div>
                     </button>
-                    <button className="p-4 hover:bg-white/10 rounded-2xl transition-all border border-white/5">
-                      <Search className="w-8 h-8 text-slate-300" />
+                    <button className="p-2 md:p-4 hover:bg-white/10 rounded-xl md:rounded-2xl transition-all border border-white/5">
+                      <Search className={`${isMobile ? "w-5 h-5" : "w-8 h-8"} text-slate-300`} />
                     </button>
                   </div>
                 </div>
               </div>
 
               {/* IPTV Main Content */}
-              <div className="flex-1 flex overflow-hidden">
+              <div className={`flex-1 flex overflow-hidden ${isMobile ? "flex-col" : "flex-row"}`}>
                 {/* Left Sidebar - Categories */}
-                <div className="w-[450px] border-r border-white/10 overflow-y-auto custom-scrollbar bg-slate-950/60">
-                  {groups.map((group, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setSelectedGroup(group)}
-                      className={`w-full p-8 text-left transition-all border-b border-white/5 flex items-center justify-between group relative ${
-                        selectedGroup === group 
-                        ? "bg-blue-600/20" 
-                        : "hover:bg-white/5"
-                      }`}
-                    >
-                      {selectedGroup === group && (
-                        <motion.div 
-                          layoutId="active-bar"
-                          className="absolute left-0 top-0 bottom-0 w-2 bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.8)]"
-                        />
-                      )}
-                      <span className={`text-2xl font-black uppercase tracking-tight transition-colors ${selectedGroup === group ? "text-white" : "text-slate-500 group-hover:text-slate-300"}`}>
-                        CANAIS | {group}
-                      </span>
-                      <span className={`text-lg font-black ${selectedGroup === group ? "text-blue-400" : "text-slate-700"}`}>
-                        ({getGroupCount(group)})
-                      </span>
-                    </button>
-                  ))}
+                <div className={`${isMobile ? "h-16 w-full shrink-0" : "w-[450px]"} border-r border-white/10 overflow-y-auto custom-scrollbar bg-slate-950/60`}>
+                  <div className={`${isMobile ? "flex flex-row overflow-x-auto h-full items-center px-2" : "flex flex-col"}`}>
+                    {groups.map((group, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedGroup(group)}
+                        className={`${isMobile ? "px-4 py-2 h-10 whitespace-nowrap border rounded-full mx-1" : "w-full p-8 text-left border-b"} transition-all border-white/5 flex items-center justify-between group relative ${
+                          selectedGroup === group 
+                          ? "bg-blue-600/20 border-blue-500/50" 
+                          : "hover:bg-white/5 border-transparent"
+                        }`}
+                      >
+                        {selectedGroup === group && !isMobile && (
+                          <motion.div 
+                            layoutId="active-bar"
+                            className="absolute left-0 top-0 bottom-0 w-2 bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.8)]"
+                          />
+                        )}
+                        <span className={`${isMobile ? "text-xs" : "text-2xl"} font-black uppercase tracking-tight transition-colors ${selectedGroup === group ? "text-white" : "text-slate-500 group-hover:text-slate-300"}`}>
+                          {isMobile ? group : `CANAIS | ${group}`}
+                        </span>
+                        {!isMobile && (
+                          <span className={`text-lg font-black ${selectedGroup === group ? "text-blue-400" : "text-slate-700"}`}>
+                            ({getGroupCount(group)})
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Right Grid - Channels */}
