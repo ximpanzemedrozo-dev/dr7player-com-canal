@@ -1,61 +1,45 @@
+@@ -1,3 +1,5 @@
 const axios = require('axios');
-const https = require('https');
-
-// Mover o Agent para fora do handler melhora a performance,
-// reutilizando a mesma conexão em invocações subsequentes da Lambda
-const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
 exports.handler = async (event) => {
-  // Uso de optional chaining caso queryStringParameters venha nulo
-  const targetUrl = event?.queryStringParameters?.url;
+  const targetUrl = event.queryStringParameters.url;
 
-  if (!targetUrl) {
-    return { 
-      statusCode: 400, 
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({ error: "URL ausente" }) 
-    };
+@@ -6,21 +8,33 @@ exports.handler = async (event) => {
   }
 
   try {
+    const response = await fetch(decodeURIComponent(targetUrl));
+    const data = await response.text();
     const decodedUrl = decodeURIComponent(targetUrl);
-    const isApi = decodedUrl.includes('player_api.php');
     
+    // Fazemos a chamada fingindo ser um player de IPTV real
     const response = await axios.get(decodedUrl, {
-      timeout: 20000,
-      // Importante: para API usamos JSON, para M3U usamos text
-      responseType: isApi ? 'json' : 'text',
+      timeout: 15000,
       headers: {
-        'User-Agent': 'IPTVSmartersPlayer',
-        'Accept': '*/*'
+        'User-Agent': 'IPTVSmartersPlayer', // Isso ajuda a não ser bloqueado pelo servidor
+        'Accept': '*/*',
       },
-      httpsAgent: httpsAgent,
+      // Ignora erros de SSL/HTTPS de servidores antigos
+      httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false }),
     });
 
     return {
       statusCode: 200,
       headers: {
-        // Define o Content-Type correto com base no que foi requisitado
-        "Content-Type": isApi ? "application/json" : "text/plain",
+        "Content-Type": "application/x-mpegurl",
+        "Content-Type": "application/json", // O XC geralmente responde JSON
         "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       },
-      // Se for M3U (texto), envia puro. Se for API, serializa como JSON.
-      body: isApi ? JSON.stringify(response.data) : response.data,
+      body: data,
+      body: typeof response.data === 'string' ? response.data : JSON.stringify(response.data),
     };
   } catch (error) {
+    console.error("Erro no Proxy:", error.message);
     return {
-      statusCode: 502,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({ 
-        error: "Servidor IPTV Recusou", 
-        details: error.message 
-      }),
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message }),
+      body: JSON.stringify({ error: "Erro ao buscar dados do servidor", details: error.message }),
     };
   }
 };
