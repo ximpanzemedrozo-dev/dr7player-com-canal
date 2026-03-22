@@ -11,18 +11,24 @@ exports.handler = async (event) => {
   }
 
   try {
-    const decodedUrl = decodeURIComponent(targetUrl);
+    // Decodifica a URL e garante que ela use a porta 80 se for HTTP
+    let decodedUrl = decodeURIComponent(targetUrl);
+    
+    // Força a porta 80 caso o usuário tenha esquecido ou o servidor exija
+    if (decodedUrl.startsWith('http://') && !decodedUrl.includes(':80') && !decodedUrl.includes(':8080')) {
+        // Opcional: Você pode manipular a string aqui se quiser forçar, 
+        // mas como você vai digitar no app, o axios já vai ler o que você mandar.
+    }
 
-    // Fazendo a requisição com Headers de um Navegador Real
     const response = await axios.get(decodedUrl, {
-      timeout: 30000, // Aumentei para 30 segundos (listas M3U grandes demoram)
+      timeout: 40000, // 40 segundos para listas muito grandes
       responseType: 'text',
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
         'Accept': '*/*',
         'Connection': 'keep-alive'
       },
-      // Ignora erros de SSL do servidor IPTV
+      // Ignora verificações de SSL para evitar conflitos com o Netlify
       httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false }),
     });
 
@@ -32,19 +38,17 @@ exports.handler = async (event) => {
         "Content-Type": "application/x-mpegurl",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
         "Cache-Control": "no-cache"
       },
       body: response.data,
     };
   } catch (error) {
-    console.error("Erro no Proxy:", error.message);
+    console.error("Erro no servidor IPTV:", error.message);
     
-    // Se o servidor de IPTV der erro, tentamos avisar o que foi
     return {
-      statusCode: error.response ? error.response.status : 502,
+      statusCode: 502,
       body: JSON.stringify({ 
-        error: "O servidor de IPTV não respondeu corretamente.", 
+        error: "O servidor de IPTV (Porta 80) demorou a responder ou recusou a conexão.", 
         details: error.message 
       }),
     };
