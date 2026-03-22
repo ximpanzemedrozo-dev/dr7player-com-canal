@@ -2,12 +2,56 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from 'url';
-import app from "./src/api";
+import axios from "axios";
+import https from "https";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function startServer() {
+  const app = express();
   const PORT = 3000;
+
+  const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+
+  // Proxy for M3U and API
+  app.get("/api/proxy-m3u", async (req, res) => {
+    const targetUrl = req.query.url as string;
+    if (!targetUrl) return res.status(400).json({ error: "URL ausente" });
+
+    try {
+      const response = await axios.get(targetUrl, {
+        timeout: 20000,
+        responseType: targetUrl.includes('player_api.php') ? 'json' : 'text',
+        headers: { 'User-Agent': 'IPTVSmartersPlayer', 'Accept': '*/*' },
+        httpsAgent
+      });
+      res.send(response.data);
+    } catch (error: any) {
+      res.status(502).json({ error: "Erro no proxy", details: error.message });
+    }
+  });
+
+  // Proxy for Streams (to bypass mixed content/CORS)
+  app.get("/api/proxy-stream", (req, res) => {
+    const targetUrl = req.query.url as string;
+    if (!targetUrl) return res.status(400).send("URL ausente");
+
+    const protocol = targetUrl.startsWith("https") ? https : https; // Use https for both or handle appropriately
+    // For simplicity in dev, we can just redirect or pipe. 
+    // But usually, a simple redirect works if the client can handle it, 
+    // or we pipe the stream.
+    
+    axios({
+      method: 'get',
+      url: targetUrl,
+      responseType: 'stream',
+      httpsAgent
+    }).then(response => {
+      response.data.pipe(res);
+    }).catch(err => {
+      res.status(500).send(err.message);
+    });
+  });
 
   // Determine the correct static path (dist for production, public for dev)
   const isProd = process.env.NODE_ENV === "production";
