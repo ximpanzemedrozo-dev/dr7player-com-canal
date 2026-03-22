@@ -4,37 +4,49 @@ exports.handler = async (event) => {
   const targetUrl = event.queryStringParameters.url;
 
   if (!targetUrl) {
-    return { statusCode: 400, body: "URL ausente" };
+    return { 
+      statusCode: 400, 
+      body: JSON.stringify({ error: "URL não fornecida" }) 
+    };
   }
 
   try {
     const decodedUrl = decodeURIComponent(targetUrl);
-    
-    // Fazemos a chamada fingindo ser um player de IPTV real
+
+    // Fazendo a requisição com Headers de um Navegador Real
     const response = await axios.get(decodedUrl, {
-      timeout: 15000,
+      timeout: 30000, // Aumentei para 30 segundos (listas M3U grandes demoram)
+      responseType: 'text',
       headers: {
-        'User-Agent': 'IPTVSmartersPlayer', // Isso ajuda a não ser bloqueado pelo servidor
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': '*/*',
+        'Connection': 'keep-alive'
       },
-      // Ignora erros de SSL/HTTPS de servidores antigos
+      // Ignora erros de SSL do servidor IPTV
       httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false }),
     });
 
     return {
       statusCode: 200,
       headers: {
-        "Content-Type": "application/json", // O XC geralmente responde JSON
+        "Content-Type": "application/x-mpegurl",
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Cache-Control": "no-cache"
       },
-      body: typeof response.data === 'string' ? response.data : JSON.stringify(response.data),
+      body: response.data,
     };
   } catch (error) {
     console.error("Erro no Proxy:", error.message);
+    
+    // Se o servidor de IPTV der erro, tentamos avisar o que foi
     return {
-      statusCode: 500,
-      body: JSON.stringify({ error: "Erro ao buscar dados do servidor", details: error.message }),
+      statusCode: error.response ? error.response.status : 502,
+      body: JSON.stringify({ 
+        error: "O servidor de IPTV não respondeu corretamente.", 
+        details: error.message 
+      }),
     };
   }
 };
