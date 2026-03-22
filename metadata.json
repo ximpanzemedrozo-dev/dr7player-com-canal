@@ -1,5 +1,5 @@
 {
   "name": "D7 Player",
   "description": "Reprodutor de IPTV profissional D7 Player, com alta visibilidade e performance para TV Box e Celular.",
-  "requestFramePermissions": []
+  "requestFramePermissions": ["microphone"]
 }

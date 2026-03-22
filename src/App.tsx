@@ -28,7 +28,9 @@ import {
   Zap,
   ZapOff,
   Hash,
-  Keyboard
+  Keyboard,
+  Mic,
+  MicOff
 } from "lucide-react";
 import Hls from "hls.js";
 
@@ -78,9 +80,67 @@ export default function App() {
   const [dialedNumber, setDialedNumber] = useState("");
   const [customChannelNumbers, setCustomChannelNumbers] = useState<Record<string, number>>({});
   const [isDialing, setIsDialing] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const [editingChannelForNumber, setEditingChannelForNumber] = useState<Channel | null>(null);
   const dialTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const startVoiceRecognition = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Seu navegador não suporta reconhecimento de voz.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "pt-BR";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+    };
+
+    recognition.onresult = (event: any) => {
+      const speechToText = event.results[0][0].transcript.toLowerCase();
+      console.log("Voz reconhecida:", speechToText);
+      
+      const numberMap: Record<string, string> = {
+        "um": "1", "dois": "2", "três": "3", "quatro": "4", "cinco": "5",
+        "seis": "6", "sete": "7", "oito": "8", "nove": "9", "dez": "10"
+      };
+
+      let num = "";
+      const numberMatch = speechToText.match(/\d+/);
+      
+      if (numberMatch) {
+        num = numberMatch[0];
+      } else {
+        // Check for spoken words
+        for (const [word, digit] of Object.entries(numberMap)) {
+          if (speechToText.includes(word)) {
+            num = digit;
+            break;
+          }
+        }
+      }
+
+      if (num) {
+        jumpToChannel(num);
+      }
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error("Erro no reconhecimento de voz:", event.error);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
+  };
 
   const jumpToChannel = (num: string) => {
     const n = parseInt(num);
@@ -99,6 +159,11 @@ export default function App() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      if (e.key.toLowerCase() === "v") {
+        startVoiceRecognition();
+        return;
+      }
 
       if (e.key >= "0" && e.key <= "9") {
         setIsDialing(true);
@@ -868,6 +933,38 @@ export default function App() {
             </>
           )}
 
+          {isListening && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[110] flex items-center justify-center bg-black/90 backdrop-blur-md"
+            >
+              <div className="text-center space-y-12">
+                <div className="relative">
+                  <motion.div 
+                    animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0.2, 0.5] }}
+                    transition={{ repeat: Infinity, duration: 2 }}
+                    className="absolute inset-0 bg-orange-500 rounded-full blur-3xl"
+                  />
+                  <div className="relative w-48 h-48 bg-orange-500 rounded-full flex items-center justify-center mx-auto shadow-[0_0_100px_rgba(249,115,22,0.5)]">
+                    <Mic className="w-24 h-24 text-white animate-pulse" />
+                  </div>
+                </div>
+                <div>
+                  <h2 className="text-6xl font-black uppercase tracking-tighter mb-4">Ouvindo...</h2>
+                  <p className="text-slate-400 text-2xl font-medium italic">"Fale o número do canal que deseja assistir"</p>
+                </div>
+                <button 
+                  onClick={() => setIsListening(false)}
+                  className="px-12 py-6 bg-white/10 hover:bg-white/20 rounded-full text-xl font-black uppercase tracking-widest border border-white/10 transition-all"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </motion.div>
+          )}
+
           {isDialing && (
             <motion.div 
               initial={{ opacity: 0, scale: 0.8 }}
@@ -930,6 +1027,16 @@ export default function App() {
             >
               <Hash className="w-6 h-6" />
             </button>
+            <div className="flex flex-col items-center">
+              <button 
+                onClick={startVoiceRecognition}
+                className={`p-3 md:p-4 rounded-xl border transition-all ${isListening ? "bg-orange-500 text-white border-orange-400 animate-pulse" : "bg-white/5 hover:bg-white/10 border-white/10 text-slate-400 hover:text-orange-500"}`}
+                title="Comando de Voz (Atalho: V)"
+              >
+                <Mic className="w-6 h-6" />
+              </button>
+              <span className="text-[8px] uppercase font-black text-slate-600 mt-1 hidden md:block">Voz</span>
+            </div>
           </div>
         </header>
 
