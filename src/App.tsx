@@ -880,8 +880,8 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white font-sans flex flex-col overflow-hidden">
-      <main className="flex-1 flex flex-col overflow-hidden relative">
+    <div className="h-screen h-[100dvh] bg-slate-950 text-white font-sans flex flex-col overflow-hidden">
+      <main className="flex-1 h-full flex flex-col overflow-hidden relative">
         <AnimatePresence>
           {isSidebarOpen && (
             <>
@@ -899,65 +899,65 @@ export default function App() {
                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
                 className={`fixed left-0 top-0 bottom-0 ${deviceMode === "android" ? "w-64 md:w-96" : "w-48 md:w-80"} bg-slate-900 border-r border-white/10 z-[101] shadow-2xl flex flex-col`}
               >
-                <div className="p-8 flex items-center justify-between border-b border-white/5">
-                  <h2 className={`text-2xl font-black text-orange-500 ${deviceMode === "android" ? "text-3xl" : ""}`}>D7 PLAYER</h2>
-                  <button onClick={() => setIsSidebarOpen(false)} className="p-2 hover:bg-white/5 rounded-lg transition-all">
-                    <X className="w-6 h-6 text-slate-400" />
+                <div className="p-4 md:p-8 flex items-center justify-between border-b border-white/5">
+                  <h2 className={`text-xl md:text-2xl font-black text-orange-500 ${deviceMode === "android" ? "text-2xl md:text-3xl" : ""}`}>D7 PLAYER</h2>
+                  <button onClick={() => setIsSidebarOpen(false)} className="p-1.5 md:p-2 hover:bg-white/5 rounded-lg transition-all">
+                    <X className="w-5 h-5 md:w-6 md:h-6 text-slate-400" />
                   </button>
                 </div>
-                <nav className="flex-1 p-6 space-y-2 overflow-y-auto custom-scrollbar">
+                <nav className="flex-1 p-2 md:p-6 space-y-1 md:space-y-2 overflow-y-auto custom-scrollbar">
                   <button 
                     onClick={() => { setCurrentView("dashboard"); setIsSidebarOpen(false); }}
-                    className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all font-bold ${currentView === "dashboard" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
+                    className={`w-full flex items-center gap-3 md:gap-4 p-2.5 md:p-4 rounded-xl md:rounded-2xl transition-all font-bold ${currentView === "dashboard" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
                   >
-                    <LayoutGrid className="w-6 h-6" />
-                    <span>HOME</span>
+                    <LayoutGrid className="w-5 h-5 md:w-6 md:h-6" />
+                    <span className="text-xs md:text-base">HOME</span>
                   </button>
-                  <div className="h-px bg-white/5 my-4" />
+                  <div className="h-px bg-white/5 my-2 md:my-4" />
                   <button 
                     onClick={() => { setActiveSection("live"); setActiveTab("all"); setCurrentView("content"); setIsSidebarOpen(false); }}
-                    className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all font-bold ${activeSection === "live" && currentView === "content" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
+                    className={`w-full flex items-center gap-3 md:gap-4 p-2.5 md:p-4 rounded-xl md:rounded-2xl transition-all font-bold ${activeSection === "live" && currentView === "content" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
                   >
-                    <Tv className="w-6 h-6" />
-                    <span>TV AO VIVO</span>
+                    <Tv className="w-5 h-5 md:w-6 md:h-6" />
+                    <span className="text-xs md:text-base">TV AO VIVO</span>
                   </button>
                   <button 
                     onClick={() => { setActiveSection("movies"); setActiveTab("all"); setCurrentView("content"); setIsSidebarOpen(false); }}
-                    className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all font-bold ${activeSection === "movies" && currentView === "content" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
+                    className={`w-full flex items-center gap-3 md:gap-4 p-2.5 md:p-4 rounded-xl md:rounded-2xl transition-all font-bold ${activeSection === "movies" && currentView === "content" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
                   >
-                    <Film className="w-6 h-6" />
-                    <span>FILMES</span>
+                    <Film className="w-5 h-5 md:w-6 md:h-6" />
+                    <span className="text-xs md:text-base">FILMES</span>
                   </button>
                   <button 
                     onClick={() => { setActiveSection("series"); setActiveTab("all"); setCurrentView("content"); setIsSidebarOpen(false); }}
-                    className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all font-bold ${activeSection === "series" && currentView === "content" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
+                    className={`w-full flex items-center gap-3 md:gap-4 p-2.5 md:p-4 rounded-xl md:rounded-2xl transition-all font-bold ${activeSection === "series" && currentView === "content" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
                   >
-                    <Clapperboard className="w-6 h-6" />
-                    <span>SÉRIES</span>
+                    <Clapperboard className="w-5 h-5 md:w-6 md:h-6" />
+                    <span className="text-xs md:text-base">SÉRIES</span>
                   </button>
-                  <div className="h-px bg-white/5 my-4" />
+                  <div className="h-px bg-white/5 my-2 md:my-4" />
                   <button 
                     onClick={() => { setActiveTab("favorites"); setCurrentView("content"); setIsSidebarOpen(false); }}
-                    className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all font-bold ${activeTab === "favorites" && currentView === "content" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
+                    className={`w-full flex items-center gap-3 md:gap-4 p-2.5 md:p-4 rounded-xl md:rounded-2xl transition-all font-bold ${activeTab === "favorites" && currentView === "content" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
                   >
-                    <List className="w-6 h-6" />
-                    <span>FAVORITOS</span>
+                    <List className="w-5 h-5 md:w-6 md:h-6" />
+                    <span className="text-xs md:text-base">FAVORITOS</span>
                   </button>
                   <button 
                     onClick={() => { setCurrentView("settings"); setIsSidebarOpen(false); }}
-                    className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all font-bold ${currentView === "settings" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
+                    className={`w-full flex items-center gap-3 md:gap-4 p-2.5 md:p-4 rounded-xl md:rounded-2xl transition-all font-bold ${currentView === "settings" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
                   >
-                    <Settings className="w-6 h-6" />
-                    <span>CONFIGURAÇÕES</span>
+                    <Settings className="w-5 h-5 md:w-6 md:h-6" />
+                    <span className="text-xs md:text-base">CONFIGURAÇÕES</span>
                   </button>
                 </nav>
-                <div className="p-6 border-t border-white/5">
+                <div className="p-3 md:p-6 border-t border-white/5">
                   <button 
                     onClick={logout}
-                    className="w-full flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-all font-bold"
+                    className="w-full flex items-center gap-3 md:gap-4 p-2.5 md:p-4 rounded-xl md:rounded-2xl text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-all font-bold"
                   >
-                    <LogOut className="w-6 h-6" />
-                    <span>SAIR DA CONTA</span>
+                    <LogOut className="w-5 h-5 md:w-6 md:h-6" />
+                    <span className="text-xs md:text-base">SAIR DA CONTA</span>
                   </button>
                 </div>
               </motion.div>
@@ -971,24 +971,24 @@ export default function App() {
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-[110] flex items-center justify-center bg-black/90 backdrop-blur-md"
             >
-              <div className="text-center space-y-12">
+              <div className="text-center space-y-4 md:space-y-12 p-4">
                 <div className="relative">
                   <motion.div 
                     animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0.2, 0.5] }}
                     transition={{ repeat: Infinity, duration: 2 }}
-                    className="absolute inset-0 bg-orange-500 rounded-full blur-3xl"
+                    className="absolute inset-0 bg-orange-500 rounded-full blur-2xl md:blur-3xl"
                   />
-                  <div className="relative w-48 h-48 bg-orange-500 rounded-full flex items-center justify-center mx-auto shadow-[0_0_100px_rgba(249,115,22,0.5)]">
-                    <Mic className="w-24 h-24 text-white animate-pulse" />
+                  <div className="relative w-24 h-24 md:w-48 md:h-48 bg-orange-500 rounded-full flex items-center justify-center mx-auto shadow-[0_0_50px_rgba(249,115,22,0.5)] md:shadow-[0_0_100px_rgba(249,115,22,0.5)]">
+                    <Mic className="w-12 h-12 md:w-24 md:h-24 text-white animate-pulse" />
                   </div>
                 </div>
                 <div>
-                  <h2 className="text-6xl font-black uppercase tracking-tighter mb-4">Ouvindo...</h2>
-                  <p className="text-slate-400 text-2xl font-medium italic">"Fale o número do canal que deseja assistir"</p>
+                  <h2 className="text-3xl md:text-6xl font-black uppercase tracking-tighter mb-2 md:mb-4">Ouvindo...</h2>
+                  <p className="text-slate-400 text-sm md:text-2xl font-medium italic">"Fale o número do canal que deseja assistir"</p>
                 </div>
                 <button 
                   onClick={() => setIsListening(false)}
-                  className="px-12 py-6 bg-white/10 hover:bg-white/20 rounded-full text-xl font-black uppercase tracking-widest border border-white/10 transition-all"
+                  className="px-8 py-3 md:px-12 md:py-6 bg-white/10 hover:bg-white/20 rounded-full text-sm md:text-xl font-black uppercase tracking-widest border border-white/10 transition-all"
                 >
                   Cancelar
                 </button>
@@ -1001,11 +1001,11 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm"
+              className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm overflow-y-auto p-4"
               onClick={() => setIsDialing(false)}
             >
             <div 
-                className="bg-slate-900 border-2 border-orange-500 rounded-2xl md:rounded-[3rem] p-4 md:p-12 text-center space-y-2 md:space-y-8 shadow-2xl shadow-orange-500/20"
+                className="bg-slate-900 border-2 border-orange-500 rounded-2xl md:rounded-[3rem] p-4 md:p-12 text-center space-y-2 md:space-y-8 shadow-2xl shadow-orange-500/20 max-w-full my-auto"
                 onClick={e => e.stopPropagation()}
               >
                 <div className="w-12 h-12 md:w-24 md:h-24 bg-orange-500 rounded-xl md:rounded-3xl flex items-center justify-center mx-auto mb-2 md:mb-6">
@@ -1021,7 +1021,7 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        <header className="p-2 md:p-8 flex items-center justify-between bg-gradient-to-b from-slate-900 to-transparent">
+        <header className="shrink-0 p-2 md:p-8 flex items-center gap-4 md:gap-8 bg-gradient-to-b from-slate-900 to-transparent">
           <div className="flex items-center gap-4 md:gap-6">
             <button 
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -1030,18 +1030,9 @@ export default function App() {
               <Menu className="w-6 h-6 text-slate-400" />
             </button>
             <h2 className="text-xl md:text-3xl font-black tracking-tight truncate max-w-[150px] md:max-w-none">D7 Player</h2>
-            <div className="flex items-center gap-3">
-              <div className="px-4 py-1.5 rounded-full bg-orange-500 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-orange-500/20">
-                Premium
-              </div>
-              <div className="px-4 py-1.5 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-black uppercase tracking-widest border border-emerald-500/30 flex items-center gap-2">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                CONNECTED
-              </div>
-            </div>
           </div>
-          <div className="flex items-center gap-4 md:gap-6 flex-1 justify-end">
-            <div className="relative flex-1 md:flex-none max-w-xs md:max-w-none">
+          <div className="flex items-center gap-4 md:gap-6">
+            <div className="relative">
               <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-slate-400 pointer-events-none" />
               <input 
                 ref={searchInputRef}
@@ -1049,7 +1040,7 @@ export default function App() {
                 placeholder="O que vamos assistir?"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="bg-slate-900 border-2 border-white/10 rounded-xl py-2 md:py-3 pl-10 md:pl-12 pr-4 w-full md:w-64 lg:w-96 text-sm md:text-base outline-none focus:border-orange-500 transition-all placeholder:text-slate-600"
+                className="bg-slate-900 border-2 border-white/10 rounded-xl py-2 md:py-3 pl-10 md:pl-12 pr-4 w-48 md:w-64 lg:w-96 text-sm md:text-base outline-none focus:border-orange-500 transition-all placeholder:text-slate-600"
               />
             </div>
             <button 
@@ -1083,7 +1074,7 @@ export default function App() {
 
         <div className="flex-1 flex overflow-hidden">
           {currentView === "dashboard" ? (
-            <div className="flex-1 p-6 md:p-12 overflow-y-auto custom-scrollbar">
+            <div className="flex-1 p-3 md:p-12 overflow-y-auto custom-scrollbar">
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -1098,12 +1089,12 @@ export default function App() {
                     <button
                       key={item.id}
                       onClick={item.action}
-                      className={`group relative aspect-[4/5] sm:aspect-square md:aspect-[16/14] bg-slate-900 rounded-2xl sm:rounded-[3rem] md:rounded-[4rem] border-2 border-white/5 hover:border-orange-500 transition-all shadow-2xl flex flex-col items-center justify-center p-2 sm:p-6 md:p-10 ${deviceMode === "android" ? "scale-105" : ""}`}
+                      className={`group relative aspect-[4/5] sm:aspect-square md:aspect-[16/14] bg-slate-900 rounded-xl sm:rounded-[3rem] md:rounded-[4rem] border-2 border-white/5 hover:border-orange-500 transition-all shadow-2xl flex flex-col items-center justify-center p-1 sm:p-6 md:p-10 ${deviceMode === "android" ? "scale-105" : ""}`}
                     >
-                      <div className={`w-10 h-10 sm:w-24 sm:h-24 md:w-36 md:h-36 bg-gradient-to-br ${item.color} rounded-xl sm:rounded-[2rem] md:rounded-[3rem] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500 shrink-0`}>
-                        <item.icon className="w-5 h-5 sm:w-12 sm:h-12 md:w-20 md:h-20 text-white" />
+                      <div className={`w-8 h-8 sm:w-24 sm:h-24 md:w-36 md:h-36 bg-gradient-to-br ${item.color} rounded-lg sm:rounded-[2rem] md:rounded-[3rem] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500 shrink-0`}>
+                        <item.icon className="w-4 h-4 sm:w-12 sm:h-12 md:w-20 md:h-20 text-white" />
                       </div>
-                      <h3 className={`font-black tracking-tight uppercase mt-2 sm:mt-6 md:mt-10 leading-none text-center ${deviceMode === "android" ? "text-xs sm:text-3xl md:text-5xl" : "text-[10px] sm:text-2xl md:text-4xl"}`}>{item.title}</h3>
+                      <h3 className={`font-black tracking-tight uppercase mt-1.5 sm:mt-6 md:mt-10 leading-none text-center ${deviceMode === "android" ? "text-[10px] sm:text-3xl md:text-5xl" : "text-[8px] sm:text-2xl md:text-4xl"}`}>{item.title}</h3>
                     </button>
                   ))}
                 </div>
@@ -1310,18 +1301,18 @@ export default function App() {
             </div>
           ) : layoutType === "iptv" ? (
             <div className="flex-1 flex flex-col bg-[#001b35] relative overflow-hidden">
-              <div className="h-20 md:h-28 border-b border-white/10 flex items-center justify-between px-6 md:px-12 z-10 bg-slate-950/40 backdrop-blur-md">
+              <div className="h-14 md:h-28 border-b border-white/10 flex items-center justify-between px-4 md:px-12 z-10 bg-slate-950/40 backdrop-blur-md">
                 <div className="flex flex-col">
-                  <span className="text-2xl md:text-4xl font-black tracking-tighter">
+                  <span className="text-xl md:text-4xl font-black tracking-tighter">
                     {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
                 
                 <div className="absolute left-1/2 -translate-x-1/2 text-center">
-                  <p className="text-xl md:text-3xl font-black text-white uppercase tracking-tighter">
+                  <p className="text-sm md:text-3xl font-black text-white uppercase tracking-tighter">
                     {activeSection === "live" ? "TV" : activeSection === "movies" ? "Filmes" : "Séries"} | <span className="text-blue-400">{selectedGroup}</span>
                   </p>
-                  <p className="text-[10px] uppercase tracking-[0.5em] text-slate-500 font-black hidden md:block">Navegação</p>
+                  <p className="text-[8px] uppercase tracking-[0.5em] text-slate-500 font-black hidden md:block">Navegação</p>
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -1335,17 +1326,17 @@ export default function App() {
               </div>
 
               <div className="flex-1 flex flex-col overflow-hidden">
-                <div className="h-16 md:h-24 border-b border-white/10 overflow-x-auto flex items-center bg-slate-950/60 no-scrollbar px-4 gap-4">
+                <div className="h-12 md:h-24 border-b border-white/10 overflow-x-auto flex items-center bg-slate-950/60 no-scrollbar px-2 gap-2 md:gap-4">
                   {groups.map((group, idx) => (
                     <button
                       key={idx}
                       onClick={() => setSelectedGroup(group)}
-                      className={`px-6 py-2 md:px-8 md:py-3 rounded-xl transition-all whitespace-nowrap flex items-center gap-3 group relative ${selectedGroup === group ? "bg-blue-600/20 border border-blue-500/30" : "hover:bg-white/5 border border-transparent"}`}
+                      className={`px-4 py-1 md:px-8 md:py-3 rounded-lg md:rounded-xl transition-all whitespace-nowrap flex items-center gap-2 md:gap-3 group relative ${selectedGroup === group ? "bg-blue-600/20 border border-blue-500/30" : "hover:bg-white/5 border border-transparent"}`}
                     >
-                      <span className={`text-sm md:text-xl font-black uppercase tracking-tight ${selectedGroup === group ? "text-white" : "text-slate-500"}`}>
+                      <span className={`text-xs md:text-xl font-black uppercase tracking-tight ${selectedGroup === group ? "text-white" : "text-slate-500"}`}>
                         {group}
                       </span>
-                      <span className={`text-[10px] md:text-sm font-black ${selectedGroup === group ? "text-blue-400" : "text-slate-700"}`}>
+                      <span className={`text-[8px] md:text-sm font-black ${selectedGroup === group ? "text-blue-400" : "text-slate-700"}`}>
                         ({getGroupCount(group)})
                       </span>
                     </button>
@@ -1402,7 +1393,7 @@ export default function App() {
             </div>
           ) : (
             <div className="flex-1 p-2 md:p-8 space-y-4 md:space-y-10 overflow-y-auto custom-scrollbar">
-              <section className="relative aspect-video bg-black rounded-xl md:rounded-[3rem] overflow-hidden border-2 md:border-4 border-white/5 shadow-2xl group">
+              <section className="shrink-0 relative aspect-video max-h-[45vh] md:max-h-none bg-black rounded-xl md:rounded-[3rem] overflow-hidden border-2 md:border-4 border-white/5 shadow-2xl group">
                 {selectedChannel ? (
                   selectedChannel.url.startsWith("demo") ? (
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900">
@@ -1428,8 +1419,8 @@ export default function App() {
                 )}
               </section>
 
-              <section className="space-y-4 md:space-y-8">
-                <div className="flex gap-2 md:gap-4 overflow-x-auto pb-2 md:pb-4 no-scrollbar scroll-smooth">
+              <section className="space-y-4 md:space-y-8 flex-1 flex flex-col min-h-0">
+                <div className="shrink-0 flex gap-2 md:gap-4 overflow-x-auto pb-2 md:pb-4 no-scrollbar scroll-smooth">
                   {groups.map((group, idx) => (
                     <button
                       key={idx}
@@ -1441,51 +1432,53 @@ export default function App() {
                   ))}
                 </div>
 
-                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-8">
-                  {filteredChannels.slice(0, visibleCount).map((channel, idx) => (
-                    <motion.button
-                      key={idx}
-                      whileHover={{ scale: 1.05, y: -5 }}
-                      onClick={() => setSelectedChannel(channel)}
-                      className={`relative aspect-video rounded-xl md:rounded-[2rem] overflow-hidden border-2 md:border-4 transition-all ${selectedChannel?.url === channel.url ? "border-orange-500 shadow-2xl" : "border-white/5 hover:border-white/20"}`}
-                    >
-                      <div className="absolute inset-0 bg-slate-900 flex items-center justify-center relative">
-                        {localStorage.getItem("iptv_show_numbers") && channel.number && (
-                          <div className="absolute top-2 left-2 md:top-3 md:left-3 bg-orange-500 text-white text-[10px] md:text-xs font-black px-2 md:px-3 py-0.5 md:py-1 rounded-lg md:rounded-xl z-10 shadow-xl">
-                            #{channel.number}
-                          </div>
-                        )}
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const newNum = prompt(`Editar número para: ${channel.name}`, channel.number?.toString());
-                            if (newNum !== null) {
-                              const num = parseInt(newNum);
-                              if (!isNaN(num)) {
-                                const custom = JSON.parse(localStorage.getItem("iptv_custom_numbers") || "{}");
-                                custom[channel.name] = num;
-                                localStorage.setItem("iptv_custom_numbers", JSON.stringify(custom));
-                                window.location.reload();
+                <div className="flex-1 overflow-y-auto custom-scrollbar">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-8 pb-10">
+                    {filteredChannels.slice(0, visibleCount).map((channel, idx) => (
+                      <motion.button
+                        key={idx}
+                        whileHover={{ scale: 1.05, y: -5 }}
+                        onClick={() => setSelectedChannel(channel)}
+                        className={`relative aspect-video rounded-xl md:rounded-[2rem] overflow-hidden border-2 md:border-4 transition-all ${selectedChannel?.url === channel.url ? "border-orange-500 shadow-2xl" : "border-white/5 hover:border-white/20"}`}
+                      >
+                        <div className="absolute inset-0 bg-slate-900 flex items-center justify-center relative">
+                          {localStorage.getItem("iptv_show_numbers") && channel.number && (
+                            <div className="absolute top-2 left-2 md:top-3 md:left-3 bg-orange-500 text-white text-[10px] md:text-xs font-black px-2 md:px-3 py-0.5 md:py-1 rounded-lg md:rounded-xl z-10 shadow-xl">
+                              #{channel.number}
+                            </div>
+                          )}
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newNum = prompt(`Editar número para: ${channel.name}`, channel.number?.toString());
+                              if (newNum !== null) {
+                                const num = parseInt(newNum);
+                                if (!isNaN(num)) {
+                                  const custom = JSON.parse(localStorage.getItem("iptv_custom_numbers") || "{}");
+                                  custom[channel.name] = num;
+                                  localStorage.setItem("iptv_custom_numbers", JSON.stringify(custom));
+                                  window.location.reload();
+                                }
                               }
-                            }
-                          }}
-                          className="absolute top-3 right-3 p-3 bg-black/60 hover:bg-orange-500 text-white rounded-2xl opacity-0 group-hover:opacity-100 transition-all z-10"
-                        >
-                          <Hash className="w-4 h-4" />
-                        </button>
-                        {channel.logo ? (
-                          <img src={channel.logo} alt="" className="w-full h-full object-contain p-4" referrerPolicy="no-referrer" loading="lazy" />
-                        ) : (
-                          <Tv className="w-12 h-12 text-slate-800" />
-                        )}
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-                      <div className="absolute bottom-2 md:bottom-6 left-2 md:left-6 right-2 md:right-6">
-                        <p className="text-[10px] md:text-lg font-black truncate text-white leading-tight">{channel.name}</p>
-                        <p className="text-[8px] md:text-xs text-orange-400 uppercase font-black truncate mt-0.5 md:mt-1">{channel.group}</p>
-                      </div>
-                    </motion.button>
-                  ))}
+                            }}
+                            className="absolute top-2 right-2 p-2 bg-black/60 hover:bg-orange-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+                          >
+                            <Hash className="w-3 h-3" />
+                          </button>
+                          {channel.logo ? (
+                            <img src={channel.logo} alt="" className="w-full h-full object-contain p-2 md:p-4" referrerPolicy="no-referrer" loading="lazy" />
+                          ) : (
+                            <Tv className="w-8 h-8 md:w-16 md:h-16 text-slate-800" />
+                          )}
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+                        <div className="absolute bottom-2 md:bottom-6 left-2 md:left-6 right-2 md:right-6">
+                          <p className="text-[11px] md:text-lg font-black truncate text-white leading-tight">{channel.name}</p>
+                          <p className="text-[9px] md:text-xs text-orange-400 uppercase font-black truncate mt-0.5 md:mt-1">{channel.group}</p>
+                        </div>
+                      </motion.button>
+                    ))}
+                  </div>
                 </div>
               </section>
             </div>
