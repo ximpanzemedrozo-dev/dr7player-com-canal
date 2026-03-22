@@ -926,6 +926,108 @@ export default function App() {
                       ))}
                     </div>
                   </div>
+
+                  <div className="bg-slate-900/50 p-8 rounded-[2.5rem] border border-white/5 space-y-6">
+                    <div className="flex items-center gap-4 text-orange-500">
+                      <User className="w-8 h-8" />
+                      <h3 className="text-2xl font-bold">Minha Conta</h3>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-slate-400 text-sm">Status: <span className="text-green-500 font-bold">Ativo</span></p>
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-900/50 p-8 rounded-[2.5rem] border border-white/5 space-y-6">
+                    <div className="flex items-center gap-4 text-orange-500">
+                      <Lock className="w-8 h-8" />
+                      <h3 className="text-2xl font-bold">Controle Parental</h3>
+                    </div>
+                    <button className="w-full py-3 bg-white/5 hover:bg-white/10 rounded-xl text-sm font-bold transition-all border border-white/5">
+                      ALTERAR SENHA PIN
+                    </button>
+                    <p className="text-slate-400 text-xs">Bloqueie categorias de conteúdo adulto.</p>
+                  </div>
+
+                  <div className="bg-slate-900/50 p-8 rounded-[2.5rem] border border-white/5 space-y-6">
+                    <div className="flex items-center gap-4 text-orange-500">
+                      <MonitorPlay className="w-8 h-8" />
+                      <h3 className="text-2xl font-bold">Player Externo</h3>
+                    </div>
+                    <div className="flex gap-2">
+                      {["Nativo", "VLC", "MX"].map(p => (
+                        <button key={p} className={`flex-1 py-2 rounded-lg text-xs font-bold border ${p === "Nativo" ? "bg-orange-500 border-orange-400" : "bg-white/5 border-white/5"}`}>
+                          {p}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-slate-400 text-xs">Escolha como reproduzir seus vídeos.</p>
+                  </div>
+
+                  <div className="bg-slate-900/50 p-8 rounded-[2.5rem] border border-white/5 space-y-6">
+                    <div className="flex items-center gap-4 text-orange-500">
+                      <RefreshCw className="w-8 h-8" />
+                      <h3 className="text-2xl font-bold">Manutenção</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <button 
+                        onClick={() => { localStorage.clear(); window.location.reload(); }}
+                        className="py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl text-xs font-bold border border-red-500/20 transition-all"
+                      >
+                        LIMPAR CACHE
+                      </button>
+                      <button 
+                        onClick={logout}
+                        className="py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold border border-white/5 transition-all"
+                      >
+                        SAIR DA CONTA
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-900/50 p-8 rounded-[2.5rem] border border-white/5 space-y-6">
+                    <div className="flex items-center gap-4 text-orange-500">
+                      <Hash className="w-8 h-8" />
+                      <h3 className="text-2xl font-bold">Canais</h3>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-400 text-sm font-bold">Numeração Automática</span>
+                        <button 
+                          onClick={() => {
+                            const newVal = !localStorage.getItem("iptv_auto_number");
+                            localStorage.setItem("iptv_auto_number", newVal ? "true" : "");
+                            window.location.reload();
+                          }}
+                          className={`w-12 h-6 rounded-full transition-all relative ${localStorage.getItem("iptv_auto_number") ? "bg-orange-500" : "bg-slate-800"}`}
+                        >
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${localStorage.getItem("iptv_auto_number") ? "left-7" : "left-1"}`} />
+                        </button>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-400 text-sm font-bold">Mostrar Números na Grade</span>
+                        <button 
+                          onClick={() => {
+                            const newVal = !localStorage.getItem("iptv_show_numbers");
+                            localStorage.setItem("iptv_show_numbers", newVal ? "true" : "");
+                            window.location.reload();
+                          }}
+                          className={`w-12 h-6 rounded-full transition-all relative ${localStorage.getItem("iptv_show_numbers") ? "bg-orange-500" : "bg-slate-800"}`}
+                        >
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${localStorage.getItem("iptv_show_numbers") ? "left-7" : "left-1"}`} />
+                        </button>
+                      </div>
+                      <button 
+                        onClick={() => {
+                          localStorage.removeItem("iptv_custom_numbers");
+                          window.location.reload();
+                        }}
+                        className="w-full py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl text-xs font-bold border border-red-500/20 transition-all"
+                      >
+                        RESETAR NÚMEROS CUSTOMIZADOS
+                      </button>
+                    </div>
+                    <p className="text-slate-400 text-xs">Ajuste como os números dos canais são exibidos.</p>
+                  </div>
                 </div>
               </motion.div>
             </div>
@@ -982,7 +1084,30 @@ export default function App() {
                         onClick={() => setSelectedChannel(channel)}
                         className={`group relative flex flex-col bg-slate-900/40 border-2 rounded-2xl overflow-hidden transition-all ${selectedChannel?.url === channel.url ? "border-blue-500 shadow-lg" : "border-white/5 hover:border-white/20"}`}
                       >
-                        <div className="aspect-square bg-slate-950/80 flex items-center justify-center p-4">
+                        <div className="aspect-square bg-slate-950/80 flex items-center justify-center p-4 relative">
+                          {localStorage.getItem("iptv_show_numbers") && channel.number && (
+                            <div className="absolute top-2 left-2 bg-orange-500 text-white text-[10px] font-black px-2 py-1 rounded-lg z-10 shadow-lg">
+                              #{channel.number}
+                            </div>
+                          )}
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newNum = prompt(`Editar número para: ${channel.name}`, channel.number?.toString());
+                              if (newNum !== null) {
+                                const num = parseInt(newNum);
+                                if (!isNaN(num)) {
+                                  const custom = JSON.parse(localStorage.getItem("iptv_custom_numbers") || "{}");
+                                  custom[channel.name] = num;
+                                  localStorage.setItem("iptv_custom_numbers", JSON.stringify(custom));
+                                  window.location.reload();
+                                }
+                              }
+                            }}
+                            className="absolute top-2 right-2 p-2 bg-black/60 hover:bg-orange-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+                          >
+                            <Hash className="w-3 h-3" />
+                          </button>
                           {channel.logo ? (
                             <img src={channel.logo} alt="" className="w-full h-full object-contain" referrerPolicy="no-referrer" loading="lazy" />
                           ) : (
@@ -1047,7 +1172,30 @@ export default function App() {
                       onClick={() => setSelectedChannel(channel)}
                       className={`relative aspect-[3/4] rounded-2xl md:rounded-[2rem] overflow-hidden border-2 md:border-4 transition-all ${selectedChannel?.url === channel.url ? "border-orange-500 shadow-2xl" : "border-white/5 hover:border-white/20"}`}
                     >
-                      <div className="absolute inset-0 bg-slate-900 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-slate-900 flex items-center justify-center relative">
+                        {localStorage.getItem("iptv_show_numbers") && channel.number && (
+                          <div className="absolute top-3 left-3 bg-orange-500 text-white text-xs font-black px-3 py-1 rounded-xl z-10 shadow-xl">
+                            #{channel.number}
+                          </div>
+                        )}
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const newNum = prompt(`Editar número para: ${channel.name}`, channel.number?.toString());
+                            if (newNum !== null) {
+                              const num = parseInt(newNum);
+                              if (!isNaN(num)) {
+                                const custom = JSON.parse(localStorage.getItem("iptv_custom_numbers") || "{}");
+                                custom[channel.name] = num;
+                                localStorage.setItem("iptv_custom_numbers", JSON.stringify(custom));
+                                window.location.reload();
+                              }
+                            }
+                          }}
+                          className="absolute top-3 right-3 p-3 bg-black/60 hover:bg-orange-500 text-white rounded-2xl opacity-0 group-hover:opacity-100 transition-all z-10"
+                        >
+                          <Hash className="w-4 h-4" />
+                        </button>
                         {channel.logo ? (
                           <img src={channel.logo} alt="" className="w-full h-full object-contain p-4" referrerPolicy="no-referrer" loading="lazy" />
                         ) : (
