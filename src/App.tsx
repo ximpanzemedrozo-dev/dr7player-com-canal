@@ -70,13 +70,13 @@ export default function App() {
   const [isAiOptimizing, setIsAiOptimizing] = useState(false);
   const [aiLog, setAiLog] = useState<string[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
   const [lowPerformanceMode, setLowPerformanceMode] = useState(false);
   const [dialedNumber, setDialedNumber] = useState("");
   const [customChannelNumbers, setCustomChannelNumbers] = useState<Record<string, number>>({});
   const [isDialing, setIsDialing] = useState(false);
   const [editingChannelForNumber, setEditingChannelForNumber] = useState<Channel | null>(null);
   const dialTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const jumpToChannel = (num: string) => {
     const n = parseInt(num);
@@ -119,10 +119,6 @@ export default function App() {
   const hlsRef = useRef<Hls | null>(null);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
     const saved = localStorage.getItem("iptv_session");
     const savedFavs = localStorage.getItem("iptv_favorites");
     const savedLayout = localStorage.getItem("iptv_layout");
@@ -144,7 +140,6 @@ export default function App() {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => {
       clearInterval(timer);
-      window.removeEventListener('resize', checkMobile);
     };
   }, []);
 
@@ -229,7 +224,8 @@ export default function App() {
     return channels.filter(c => {
       if (c.category !== activeSection) return false;
       if (activeTab === "favorites" && !favorites.includes(c.url)) return false;
-      if (selectedGroup !== "Todos" && c.group !== selectedGroup) return false;
+      // Se houver busca, ignorar o filtro de grupo para encontrar em qualquer lugar da categoria
+      if (query === "" && selectedGroup !== "Todos" && c.group !== selectedGroup) return false;
       if (query !== "" && !c.name.toLowerCase().includes(query)) return false;
       return true;
     });
@@ -746,13 +742,23 @@ export default function App() {
               <Menu className="w-6 h-6 text-slate-400" />
             </button>
             <h2 className="text-xl md:text-3xl font-black tracking-tight truncate max-w-[150px] md:max-w-none">D7 Player</h2>
+            <div className="flex items-center gap-3">
+              <div className="px-4 py-1.5 rounded-full bg-orange-500 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-orange-500/20">
+                Premium
+              </div>
+              <div className="px-4 py-1.5 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-black uppercase tracking-widest border border-emerald-500/30 flex items-center gap-2">
+                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                CONNECTED
+              </div>
+            </div>
           </div>
           <div className="flex items-center gap-4 md:gap-6 flex-1 justify-end">
             <div className="relative flex-1 md:flex-none max-w-xs md:max-w-none">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
               <input 
+                ref={searchInputRef}
                 type="text"
-                placeholder={isMobile ? "Buscar..." : "O que vamos assistir?"}
+                placeholder="O que vamos assistir?"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="bg-slate-900 border-2 border-white/10 rounded-xl py-3 pl-12 pr-4 w-full md:w-64 lg:w-96 text-base outline-none focus:border-orange-500 transition-all placeholder:text-slate-600"
@@ -788,7 +794,7 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-3 gap-8">
                   {[
                     { id: "live", title: "Canais", icon: Tv, color: "from-orange-500 to-orange-600" },
                     { id: "movies", title: "Filmes", icon: Film, color: "from-blue-500 to-blue-600" },
@@ -797,7 +803,7 @@ export default function App() {
                     <button
                       key={item.id}
                       onClick={() => { setActiveSection(item.id as any); setCurrentView("content"); }}
-                      className="group relative aspect-[4/3] md:aspect-[4/5] bg-slate-900 rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden border-2 border-white/5 hover:border-orange-500 transition-all shadow-2xl flex flex-col items-center justify-center gap-4 md:gap-8"
+                      className="group relative aspect-[4/5] bg-slate-900 rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden border-2 border-white/5 hover:border-orange-500 transition-all shadow-2xl flex flex-col items-center justify-center gap-4 md:gap-8"
                     >
                       <div className={`w-20 h-20 md:w-32 md:h-32 bg-gradient-to-br ${item.color} rounded-[1.5rem] md:rounded-[2.5rem] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500`}>
                         <item.icon className="w-10 h-10 md:w-16 md:h-16 text-white" />
@@ -869,7 +875,10 @@ export default function App() {
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <button className="p-3 hover:bg-white/10 rounded-2xl transition-all border border-white/5">
+                  <button 
+                    onClick={() => searchInputRef.current?.focus()}
+                    className="p-3 hover:bg-white/10 rounded-2xl transition-all border border-white/5"
+                  >
                     <Search className="w-6 h-6 text-slate-300" />
                   </button>
                 </div>
@@ -894,7 +903,7 @@ export default function App() {
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-4 md:p-10 custom-scrollbar bg-black/20">
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6">
+                  <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
                     {filteredChannels.slice(0, visibleCount).map((channel, idx) => (
                       <motion.button
                         key={idx}
@@ -944,7 +953,7 @@ export default function App() {
                   ))}
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-8">
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-8">
                   {filteredChannels.slice(0, visibleCount).map((channel, idx) => (
                     <motion.button
                       key={idx}
