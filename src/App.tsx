@@ -281,8 +281,62 @@ export default function App() {
     }
   };
 
+  const enterDemoMode = () => {
+    setLoading(true);
+    const demoUser: UserData = {
+      name: "Usuário Demo",
+      server: "demo.server.com",
+      username: "demo",
+      m3uUrl: "demo"
+    };
+    
+    // Mock channels for layout testing
+    const mockChannels: Channel[] = [];
+    
+    // Live Channels
+    for (let i = 1; i <= 50; i++) {
+      mockChannels.push({
+        name: `Canal Demo ${i}`,
+        url: `demo-live-${i}`,
+        group: i <= 25 ? "ESPORTES" : "NOTÍCIAS",
+        category: "live",
+        number: i,
+        logo: `https://picsum.photos/seed/live-${i}/200/200`
+      });
+    }
+    
+    // Movies
+    for (let i = 1; i <= 30; i++) {
+      mockChannels.push({
+        name: `Filme Demo ${i}`,
+        url: `demo-movie-${i}`,
+        group: i <= 15 ? "AÇÃO" : "COMÉDIA",
+        category: "movies",
+        logo: `https://picsum.photos/seed/movie-${i}/300/450`
+      });
+    }
+    
+    // Series
+    for (let i = 1; i <= 20; i++) {
+      mockChannels.push({
+        name: `Série Demo ${i}`,
+        url: `demo-series-${i}`,
+        group: "SÉRIES ORIGINAIS",
+        category: "series",
+        logo: `https://picsum.photos/seed/series-${i}/300/450`
+      });
+    }
+
+    setTimeout(() => {
+      setChannels(mockChannels);
+      setUserData(demoUser);
+      setIsLoggedIn(true);
+      setLoading(false);
+    }, 1000);
+  };
+
   const fetchChannels = React.useCallback(async (url: string) => {
-    if (isParsing) return;
+    if (isParsing || url === "demo") return;
     setLoading(true);
     setError(null);
     try {
@@ -607,6 +661,23 @@ export default function App() {
               >
                 {loading ? "Entrando..." : "ENTRAR AGORA"}
               </button>
+
+              <div className="pt-4 space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="h-px bg-white/10 flex-1" />
+                  <span className="text-xs font-black text-slate-600 uppercase tracking-widest">Ou use para testes</span>
+                  <div className="h-px bg-white/10 flex-1" />
+                </div>
+                
+                <button 
+                  type="button"
+                  onClick={enterDemoMode}
+                  className="w-full py-4 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-orange-500 font-bold text-lg rounded-[1.5rem] transition-all border border-white/10 flex items-center justify-center gap-3 group"
+                >
+                  <RefreshCw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
+                  MODO DEMO (TESTAR LAYOUT)
+                </button>
+              </div>
             </form>
           </div>
         </motion.div>
@@ -931,7 +1002,22 @@ export default function App() {
             <div className="flex-1 p-4 md:p-8 space-y-10 overflow-y-auto custom-scrollbar">
               <section className="relative aspect-video bg-black rounded-[2rem] md:rounded-[3rem] overflow-hidden border-4 border-white/5 shadow-2xl group">
                 {selectedChannel ? (
-                  <video ref={videoRef} className="w-full h-full object-contain" controls autoPlay playsInline />
+                  selectedChannel.url.startsWith("demo") ? (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900">
+                      <img 
+                        src={selectedChannel.logo} 
+                        className="w-full h-full object-cover opacity-20 absolute inset-0" 
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="relative z-10 text-center p-8">
+                        <Play className="w-20 h-20 text-orange-500 mx-auto mb-4 animate-pulse" />
+                        <h3 className="text-3xl font-black">{selectedChannel.name}</h3>
+                        <p className="text-slate-400 mt-2">Modo Demo: Reprodução simulada</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <video ref={videoRef} className="w-full h-full object-contain" controls autoPlay playsInline />
+                  )
                 ) : (
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-700">
                     <MonitorPlay className="w-20 h-20 md:w-32 md:h-32 mb-6 opacity-20" />
