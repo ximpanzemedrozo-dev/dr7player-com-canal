@@ -24,6 +24,7 @@ import {
   Clapperboard,
   Check,
   Menu,
+  X,
   Zap,
   ZapOff,
   Hash,
@@ -69,7 +70,10 @@ export default function App() {
   const [playerEngine, setPlayerEngine] = useState<"hls" | "native" | "proxy">("hls");
   const [isAiOptimizing, setIsAiOptimizing] = useState(false);
   const [aiLog, setAiLog] = useState<string[]>([]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [deviceMode, setDeviceMode] = useState<"pc" | "android">(() => {
+    return (localStorage.getItem("iptv_device_mode") as "pc" | "android") || "pc";
+  });
   const [lowPerformanceMode, setLowPerformanceMode] = useState(false);
   const [dialedNumber, setDialedNumber] = useState("");
   const [customChannelNumbers, setCustomChannelNumbers] = useState<Record<string, number>>({});
@@ -141,6 +145,18 @@ export default function App() {
     return () => {
       clearInterval(timer);
     };
+  }, []);
+
+  // TV Box: Scroll focused navigation buttons into view
+  useEffect(() => {
+    const handleFocus = (e: FocusEvent) => {
+      const target = e.target as HTMLElement;
+      if (target && target.closest('nav')) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    };
+    window.addEventListener('focusin', handleFocus);
+    return () => window.removeEventListener('focusin', handleFocus);
   }, []);
 
   const toggleFavorite = (url: string) => {
@@ -340,8 +356,9 @@ export default function App() {
     setLoading(true);
     setError(null);
     try {
-      const proxyUrl = `/api/proxy-m3u?url=${encodeURIComponent(url)}`;
-      const response = await fetch(proxyUrl);
+      const isBlob = url.startsWith('blob:');
+      const fetchUrl = isBlob ? url : `/api/proxy-m3u?url=${encodeURIComponent(url)}`;
+      const response = await fetch(fetchUrl);
       if (!response.ok) throw new Error(`Erro do servidor: ${response.status}`);
       
       const text = await response.text();
@@ -688,7 +705,37 @@ export default function App() {
   if (loading) {
     return (
       <div className="fixed inset-0 bg-slate-950 flex flex-col items-center justify-center text-white z-50 p-6 overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.08] pointer-events-none bg-[url('https://media.giphy.com/media/oEI9uWUqnW9Fe/giphy.gif')] bg-cover" />
+        {/* Animated Geometric Background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ 
+                x: Math.random() * 100 + "%", 
+                y: Math.random() * 100 + "%",
+                rotate: 0,
+                opacity: 0.1
+              }}
+              animate={{ 
+                x: [null, Math.random() * 100 + "%"],
+                y: [null, Math.random() * 100 + "%"],
+                rotate: [0, 360],
+                opacity: [0.1, 0.2, 0.1]
+              }}
+              transition={{ 
+                duration: 10 + Math.random() * 20, 
+                repeat: Infinity, 
+                ease: "linear" 
+              }}
+              className="absolute w-32 h-32 border border-white/10 rounded-3xl"
+              style={{
+                borderRadius: i % 2 === 0 ? "30% 70% 70% 30% / 30% 30% 70% 70%" : "50%",
+                background: i % 3 === 0 ? "linear-gradient(45deg, rgba(249,115,22,0.05), transparent)" : "transparent"
+              }}
+            />
+          ))}
+        </div>
+
         <motion.div 
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -718,67 +765,90 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white font-sans flex overflow-hidden">
-      <div className={`${isSidebarOpen ? "w-24" : "w-0 overflow-hidden"} bg-slate-900 border-r border-white/10 flex flex-col items-center py-8 gap-8 z-40 transition-all duration-300 relative`}>
-        <div className="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/30">
-          <Tv className="w-8 h-8 text-white" />
-        </div>
-        <nav className="flex-1 flex flex-col gap-4">
-          <button 
-            onClick={() => setCurrentView("dashboard")}
-            className={`p-5 rounded-2xl transition-all flex flex-col items-center gap-1 ${currentView === "dashboard" ? "bg-orange-500/20 text-orange-500 border border-orange-500/30" : "text-slate-400 hover:bg-white/5"}`}
-          >
-            <LayoutGrid className="w-8 h-8" />
-            <span className="text-[10px] font-bold uppercase">Home</span>
-          </button>
-          <div className="h-px bg-white/5 mx-4" />
-          <button 
-            onClick={() => { setActiveSection("live"); setActiveTab("all"); setCurrentView("content"); }}
-            className={`p-5 rounded-2xl transition-all flex flex-col items-center gap-1 ${activeSection === "live" && currentView === "content" ? "bg-orange-500/20 text-orange-500 border border-orange-500/30" : "text-slate-400 hover:bg-white/5"}`}
-          >
-            <Tv className="w-8 h-8" />
-            <span className="text-[10px] font-bold uppercase">TV</span>
-          </button>
-          <button 
-            onClick={() => { setActiveSection("movies"); setActiveTab("all"); setCurrentView("content"); }}
-            className={`p-5 rounded-2xl transition-all flex flex-col items-center gap-1 ${activeSection === "movies" && currentView === "content" ? "bg-orange-500/20 text-orange-500 border border-orange-500/30" : "text-slate-400 hover:bg-white/5"}`}
-          >
-            <Film className="w-8 h-8" />
-            <span className="text-[10px] font-bold uppercase">Filmes</span>
-          </button>
-          <button 
-            onClick={() => { setActiveSection("series"); setActiveTab("all"); setCurrentView("content"); }}
-            className={`p-5 rounded-2xl transition-all flex flex-col items-center gap-1 ${activeSection === "series" && currentView === "content" ? "bg-orange-500/20 text-orange-500 border border-orange-500/30" : "text-slate-400 hover:bg-white/5"}`}
-          >
-            <Clapperboard className="w-8 h-8" />
-            <span className="text-[10px] font-bold uppercase">Séries</span>
-          </button>
-          <div className="h-px bg-white/5 mx-4" />
-          <button 
-            onClick={() => { setActiveTab("favorites"); setCurrentView("content"); }}
-            className={`p-5 rounded-2xl transition-all flex flex-col items-center gap-1 ${activeTab === "favorites" && currentView === "content" ? "bg-orange-500/20 text-orange-500 border border-orange-500/30" : "text-slate-400 hover:bg-white/5"}`}
-          >
-            <List className="w-8 h-8" />
-            <span className="text-[10px] font-bold uppercase">Favs</span>
-          </button>
-          <button 
-            onClick={() => setCurrentView("settings")}
-            className={`p-5 rounded-2xl transition-all flex flex-col items-center gap-1 ${currentView === "settings" ? "bg-orange-500/20 text-orange-500 border border-orange-500/30" : "text-slate-400 hover:bg-white/5"}`}
-          >
-            <Settings className="w-8 h-8" />
-            <span className="text-[10px] font-bold uppercase">Config</span>
-          </button>
-        </nav>
-        <button 
-          onClick={logout}
-          className="p-5 rounded-2xl text-slate-400 hover:text-red-500 transition-colors"
-        >
-          <LogOut className="w-8 h-8" />
-        </button>
-      </div>
-
-      <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
+    <div className="min-h-screen bg-slate-950 text-white font-sans flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col overflow-hidden relative">
         <AnimatePresence>
+          {isSidebarOpen && (
+            <>
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsSidebarOpen(false)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+              />
+              <motion.div 
+                initial={{ x: "-100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "-100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                className={`fixed left-0 top-0 bottom-0 ${deviceMode === "android" ? "w-96" : "w-80"} bg-slate-900 border-r border-white/10 z-[101] shadow-2xl flex flex-col`}
+              >
+                <div className="p-8 flex items-center justify-between border-b border-white/5">
+                  <h2 className={`text-2xl font-black text-orange-500 ${deviceMode === "android" ? "text-3xl" : ""}`}>D7 PLAYER</h2>
+                  <button onClick={() => setIsSidebarOpen(false)} className="p-2 hover:bg-white/5 rounded-lg transition-all">
+                    <X className="w-6 h-6 text-slate-400" />
+                  </button>
+                </div>
+                <nav className="flex-1 p-6 space-y-2 overflow-y-auto custom-scrollbar">
+                  <button 
+                    onClick={() => { setCurrentView("dashboard"); setIsSidebarOpen(false); }}
+                    className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all font-bold ${currentView === "dashboard" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
+                  >
+                    <LayoutGrid className="w-6 h-6" />
+                    <span>HOME</span>
+                  </button>
+                  <div className="h-px bg-white/5 my-4" />
+                  <button 
+                    onClick={() => { setActiveSection("live"); setActiveTab("all"); setCurrentView("content"); setIsSidebarOpen(false); }}
+                    className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all font-bold ${activeSection === "live" && currentView === "content" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
+                  >
+                    <Tv className="w-6 h-6" />
+                    <span>TV AO VIVO</span>
+                  </button>
+                  <button 
+                    onClick={() => { setActiveSection("movies"); setActiveTab("all"); setCurrentView("content"); setIsSidebarOpen(false); }}
+                    className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all font-bold ${activeSection === "movies" && currentView === "content" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
+                  >
+                    <Film className="w-6 h-6" />
+                    <span>FILMES</span>
+                  </button>
+                  <button 
+                    onClick={() => { setActiveSection("series"); setActiveTab("all"); setCurrentView("content"); setIsSidebarOpen(false); }}
+                    className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all font-bold ${activeSection === "series" && currentView === "content" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
+                  >
+                    <Clapperboard className="w-6 h-6" />
+                    <span>SÉRIES</span>
+                  </button>
+                  <div className="h-px bg-white/5 my-4" />
+                  <button 
+                    onClick={() => { setActiveTab("favorites"); setCurrentView("content"); setIsSidebarOpen(false); }}
+                    className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all font-bold ${activeTab === "favorites" && currentView === "content" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
+                  >
+                    <List className="w-6 h-6" />
+                    <span>FAVORITOS</span>
+                  </button>
+                  <button 
+                    onClick={() => { setCurrentView("settings"); setIsSidebarOpen(false); }}
+                    className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all font-bold ${currentView === "settings" ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-400 hover:bg-white/5"}`}
+                  >
+                    <Settings className="w-6 h-6" />
+                    <span>CONFIGURAÇÕES</span>
+                  </button>
+                </nav>
+                <div className="p-6 border-t border-white/5">
+                  <button 
+                    onClick={logout}
+                    className="w-full flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-all font-bold"
+                  >
+                    <LogOut className="w-6 h-6" />
+                    <span>SAIR DA CONTA</span>
+                  </button>
+                </div>
+              </motion.div>
+            </>
+          )}
+
           {isDialing && (
             <motion.div 
               initial={{ opacity: 0, scale: 0.8 }}
@@ -850,36 +920,23 @@ export default function App() {
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="max-w-7xl mx-auto space-y-12"
+                className="max-w-7xl mx-auto h-full flex flex-col justify-center"
               >
-                {/* Featured Banner */}
-                <div className="relative h-64 md:h-96 rounded-[3rem] overflow-hidden border-4 border-white/5 shadow-2xl">
-                  <img 
-                    src="https://picsum.photos/seed/iptv-home/1200/600" 
-                    className="w-full h-full object-cover opacity-60"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/40 to-transparent flex flex-col justify-center p-8 md:p-12">
-                    <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-4">D7 PLAYER</h2>
-                    <p className="text-xl md:text-2xl text-slate-300 max-w-xl font-medium">A melhor experiência de IPTV. Filmes, Séries e Canais ao vivo em um só lugar.</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
                   {[
-                    { id: "live", title: "Canais", icon: Tv, color: "from-orange-500 to-orange-600" },
-                    { id: "movies", title: "Filmes", icon: Film, color: "from-blue-500 to-blue-600" },
-                    { id: "series", title: "Séries", icon: Clapperboard, color: "from-purple-500 to-purple-600" }
+                    { id: "live", title: "Canais TV", icon: Tv, color: "from-orange-500 to-orange-600", action: () => { setActiveSection("live"); setCurrentView("content"); } },
+                    { id: "movies", title: "Filmes", icon: Film, color: "from-blue-500 to-blue-600", action: () => { setActiveSection("movies"); setCurrentView("content"); } },
+                    { id: "series", title: "Séries", icon: Clapperboard, color: "from-purple-500 to-purple-600", action: () => { setActiveSection("series"); setCurrentView("content"); } }
                   ].map((item) => (
                     <button
                       key={item.id}
-                      onClick={() => { setActiveSection(item.id as any); setCurrentView("content"); }}
-                      className="group relative aspect-[4/5] bg-slate-900 rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden border-2 border-white/5 hover:border-orange-500 transition-all shadow-2xl flex flex-col items-center justify-center gap-4 md:gap-8"
+                      onClick={item.action}
+                      className={`group relative aspect-[16/11] bg-slate-900 rounded-[3rem] md:rounded-[4rem] overflow-hidden border-2 border-white/5 hover:border-orange-500 transition-all shadow-2xl flex flex-col items-center justify-center p-6 md:p-10 ${deviceMode === "android" ? "scale-105" : ""}`}
                     >
-                      <div className={`w-20 h-20 md:w-32 md:h-32 bg-gradient-to-br ${item.color} rounded-[1.5rem] md:rounded-[2.5rem] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500`}>
-                        <item.icon className="w-10 h-10 md:w-16 md:h-16 text-white" />
+                      <div className={`w-24 h-24 md:w-36 md:h-36 bg-gradient-to-br ${item.color} rounded-[2rem] md:rounded-[3rem] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500 shrink-0`}>
+                        <item.icon className="w-12 h-12 md:w-20 md:h-20 text-white" />
                       </div>
-                      <h3 className="text-2xl md:text-4xl font-black tracking-tight">{item.title}</h3>
+                      <h3 className={`font-black tracking-tight uppercase mt-6 md:mt-10 ${deviceMode === "android" ? "text-3xl md:text-5xl" : "text-2xl md:text-4xl"}`}>{item.title}</h3>
                     </button>
                   ))}
                 </div>
@@ -894,6 +951,29 @@ export default function App() {
               >
                 <h2 className="text-4xl md:text-5xl font-black mb-12">Configurações</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="bg-slate-900/50 p-8 rounded-[2.5rem] border border-white/5 space-y-6">
+                    <div className="flex items-center gap-4 text-orange-500">
+                      <MonitorPlay className="w-8 h-8" />
+                      <h3 className="text-2xl font-bold">Modo de Dispositivo</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      {[
+                        { id: "pc", label: "PC / Desktop", icon: MonitorPlay },
+                        { id: "android", label: "Android / TV", icon: Tv }
+                      ].map(mode => (
+                        <button 
+                          key={mode.id}
+                          onClick={() => { setDeviceMode(mode.id as any); localStorage.setItem("iptv_device_mode", mode.id); }}
+                          className={`p-6 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 ${deviceMode === mode.id ? "border-orange-500 bg-orange-500/10" : "border-white/5 bg-white/5"}`}
+                        >
+                          <mode.icon className={`w-8 h-8 ${deviceMode === mode.id ? "text-orange-500" : "text-slate-400"}`} />
+                          <span className="text-sm font-bold uppercase">{mode.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-slate-400 text-xs">O modo Android otimiza a interface para navegação com controle remoto.</p>
+                  </div>
+
                   <div className="bg-slate-900/50 p-8 rounded-[2.5rem] border border-white/5 space-y-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4 text-orange-500">
@@ -969,6 +1049,9 @@ export default function App() {
                       <h3 className="text-2xl font-bold">Manutenção</h3>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
+                      <div className="col-span-2">
+                        <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-2">Ações do Sistema</p>
+                      </div>
                       <button 
                         onClick={() => { localStorage.clear(); window.location.reload(); }}
                         className="py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl text-xs font-bold border border-red-500/20 transition-all"
@@ -976,10 +1059,37 @@ export default function App() {
                         LIMPAR CACHE
                       </button>
                       <button 
+                        onClick={() => {
+                          if (userData?.m3uUrl) {
+                            fetchChannels(userData.m3uUrl);
+                          } else {
+                            window.location.reload();
+                          }
+                        }}
+                        className="py-3 bg-orange-500/10 hover:bg-orange-500/20 text-orange-500 rounded-xl text-xs font-bold border border-orange-500/20 transition-all"
+                      >
+                        RECARREGAR LISTA
+                      </button>
+                      <div className="col-span-2 mt-2">
+                        <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-2">Conta e Preferências</p>
+                      </div>
+                      <button 
                         onClick={logout}
                         className="py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold border border-white/5 transition-all"
                       >
                         SAIR DA CONTA
+                      </button>
+                      <button 
+                        onClick={() => {
+                          const custom = prompt("Limpar todos os números customizados? Digite 'SIM' para confirmar.");
+                          if (custom === "SIM") {
+                            localStorage.removeItem("iptv_custom_numbers");
+                            window.location.reload();
+                          }
+                        }}
+                        className="py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold border border-white/5 transition-all"
+                      >
+                        RESETAR NÚMEROS
                       </button>
                     </div>
                   </div>
@@ -1033,7 +1143,7 @@ export default function App() {
             </div>
           ) : layoutType === "iptv" ? (
             <div className="flex-1 flex flex-col bg-[#001b35] relative overflow-hidden">
-              <div className="h-28 border-b border-white/10 flex items-center justify-between px-6 md:px-12 z-10 bg-slate-950/40 backdrop-blur-md">
+              <div className="h-20 md:h-28 border-b border-white/10 flex items-center justify-between px-6 md:px-12 z-10 bg-slate-950/40 backdrop-blur-md">
                 <div className="flex flex-col">
                   <span className="text-2xl md:text-4xl font-black tracking-tighter">
                     {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -1057,18 +1167,18 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="flex-1 flex overflow-hidden">
-                <div className="w-64 md:w-[450px] border-r border-white/10 overflow-y-auto custom-scrollbar bg-slate-950/60">
+              <div className="flex-1 flex flex-col overflow-hidden">
+                <div className="h-16 md:h-24 border-b border-white/10 overflow-x-auto flex items-center bg-slate-950/60 no-scrollbar px-4 gap-4">
                   {groups.map((group, idx) => (
                     <button
                       key={idx}
                       onClick={() => setSelectedGroup(group)}
-                      className={`w-full p-6 md:p-8 text-left transition-all border-b border-white/5 flex items-center justify-between group relative ${selectedGroup === group ? "bg-blue-600/20" : "hover:bg-white/5"}`}
+                      className={`px-6 py-2 md:px-8 md:py-3 rounded-xl transition-all whitespace-nowrap flex items-center gap-3 group relative ${selectedGroup === group ? "bg-blue-600/20 border border-blue-500/30" : "hover:bg-white/5 border border-transparent"}`}
                     >
-                      <span className={`text-lg md:text-2xl font-black uppercase tracking-tight ${selectedGroup === group ? "text-white" : "text-slate-500"}`}>
+                      <span className={`text-sm md:text-xl font-black uppercase tracking-tight ${selectedGroup === group ? "text-white" : "text-slate-500"}`}>
                         {group}
                       </span>
-                      <span className={`text-sm md:text-lg font-black ${selectedGroup === group ? "text-blue-400" : "text-slate-700"}`}>
+                      <span className={`text-[10px] md:text-sm font-black ${selectedGroup === group ? "text-blue-400" : "text-slate-700"}`}>
                         ({getGroupCount(group)})
                       </span>
                     </button>
@@ -1084,7 +1194,7 @@ export default function App() {
                         onClick={() => setSelectedChannel(channel)}
                         className={`group relative flex flex-col bg-slate-900/40 border-2 rounded-2xl overflow-hidden transition-all ${selectedChannel?.url === channel.url ? "border-blue-500 shadow-lg" : "border-white/5 hover:border-white/20"}`}
                       >
-                        <div className="aspect-square bg-slate-950/80 flex items-center justify-center p-4 relative">
+                        <div className="aspect-video bg-slate-950/80 flex items-center justify-center p-4 relative">
                           {localStorage.getItem("iptv_show_numbers") && channel.number && (
                             <div className="absolute top-2 left-2 bg-orange-500 text-white text-[10px] font-black px-2 py-1 rounded-lg z-10 shadow-lg">
                               #{channel.number}
@@ -1152,7 +1262,7 @@ export default function App() {
               </section>
 
               <section className="space-y-8">
-                <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar-h">
+                <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar scroll-smooth">
                   {groups.map((group, idx) => (
                     <button
                       key={idx}
@@ -1170,7 +1280,7 @@ export default function App() {
                       key={idx}
                       whileHover={{ scale: 1.05, y: -5 }}
                       onClick={() => setSelectedChannel(channel)}
-                      className={`relative aspect-[3/4] rounded-2xl md:rounded-[2rem] overflow-hidden border-2 md:border-4 transition-all ${selectedChannel?.url === channel.url ? "border-orange-500 shadow-2xl" : "border-white/5 hover:border-white/20"}`}
+                      className={`relative aspect-video rounded-2xl md:rounded-[2rem] overflow-hidden border-2 md:border-4 transition-all ${selectedChannel?.url === channel.url ? "border-orange-500 shadow-2xl" : "border-white/5 hover:border-white/20"}`}
                     >
                       <div className="absolute inset-0 bg-slate-900 flex items-center justify-center relative">
                         {localStorage.getItem("iptv_show_numbers") && channel.number && (
