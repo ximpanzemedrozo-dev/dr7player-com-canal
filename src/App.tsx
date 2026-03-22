@@ -897,7 +897,7 @@ export default function App() {
                 animate={{ x: 0 }}
                 exit={{ x: "-100%" }}
                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className={`fixed left-0 top-0 bottom-0 ${deviceMode === "android" ? "w-72 md:w-96" : "w-64 md:w-80"} bg-slate-900 border-r border-white/10 z-[101] shadow-2xl flex flex-col`}
+                className={`fixed left-0 top-0 bottom-0 ${deviceMode === "android" ? "w-64 md:w-96" : "w-48 md:w-80"} bg-slate-900 border-r border-white/10 z-[101] shadow-2xl flex flex-col`}
               >
                 <div className="p-8 flex items-center justify-between border-b border-white/5">
                   <h2 className={`text-2xl font-black text-orange-500 ${deviceMode === "android" ? "text-3xl" : ""}`}>D7 PLAYER</h2>
@@ -1004,24 +1004,24 @@ export default function App() {
               className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm"
               onClick={() => setIsDialing(false)}
             >
-              <div 
-                className="bg-slate-900 border-2 border-orange-500 rounded-[3rem] p-12 text-center space-y-8 shadow-2xl shadow-orange-500/20"
+            <div 
+                className="bg-slate-900 border-2 border-orange-500 rounded-2xl md:rounded-[3rem] p-4 md:p-12 text-center space-y-2 md:space-y-8 shadow-2xl shadow-orange-500/20"
                 onClick={e => e.stopPropagation()}
               >
-                <div className="w-24 h-24 bg-orange-500 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                  <Hash className="w-12 h-12 text-white" />
+                <div className="w-12 h-12 md:w-24 md:h-24 bg-orange-500 rounded-xl md:rounded-3xl flex items-center justify-center mx-auto mb-2 md:mb-6">
+                  <Hash className="w-6 h-6 md:w-12 md:h-12 text-white" />
                 </div>
-                <h2 className="text-3xl font-black">Digitar Canal</h2>
-                <div className="text-7xl font-black text-orange-500 tracking-widest min-h-[80px]">
+                <h2 className="text-base md:text-3xl font-black">Digitar Canal</h2>
+                <div className="text-4xl md:text-7xl font-black text-orange-500 tracking-widest min-h-[40px] md:min-h-[80px]">
                   {dialedNumber || "---"}
                 </div>
-                <p className="text-slate-400">Use o controle ou teclado para digitar</p>
+                <p className="text-[10px] md:text-base text-slate-400">Use o controle ou teclado para digitar</p>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <header className="p-4 md:p-8 flex items-center justify-between bg-gradient-to-b from-slate-900 to-transparent">
+        <header className="p-2 md:p-8 flex items-center justify-between bg-gradient-to-b from-slate-900 to-transparent">
           <div className="flex items-center gap-4 md:gap-6">
             <button 
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -1042,39 +1042,39 @@ export default function App() {
           </div>
           <div className="flex items-center gap-4 md:gap-6 flex-1 justify-end">
             <div className="relative flex-1 md:flex-none max-w-xs md:max-w-none">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+              <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-slate-400 pointer-events-none" />
               <input 
                 ref={searchInputRef}
                 type="text"
                 placeholder="O que vamos assistir?"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="bg-slate-900 border-2 border-white/10 rounded-xl py-3 pl-12 pr-4 w-full md:w-64 lg:w-96 text-base outline-none focus:border-orange-500 transition-all placeholder:text-slate-600"
+                className="bg-slate-900 border-2 border-white/10 rounded-xl py-2 md:py-3 pl-10 md:pl-12 pr-4 w-full md:w-64 lg:w-96 text-sm md:text-base outline-none focus:border-orange-500 transition-all placeholder:text-slate-600"
               />
             </div>
             <button 
               onClick={() => setIsDialing(true)}
-              className="p-3 md:p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 text-slate-400 hover:text-orange-500 transition-all"
+              className="p-2 md:p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 text-slate-400 hover:text-orange-500 transition-all"
             >
-              <Hash className="w-6 h-6" />
+              <Hash className="w-5 h-5 md:w-6 md:h-6" />
             </button>
             <div className="flex flex-col items-center">
               <button 
                 onClick={toggleFullscreen}
-                className="p-3 md:p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 text-slate-400 hover:text-orange-500 transition-all"
+                className="p-2 md:p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 text-slate-400 hover:text-orange-500 transition-all"
                 title="Tela Cheia"
               >
-                {isFullscreen ? <Minimize className="w-6 h-6" /> : <Maximize className="w-6 h-6" />}
+                {isFullscreen ? <Minimize className="w-5 h-5 md:w-6 md:h-6" /> : <Maximize className="w-5 h-5 md:w-6 md:h-6" />}
               </button>
               <span className="text-[8px] uppercase font-black text-slate-600 mt-1 hidden md:block">Tela</span>
             </div>
             <div className="flex flex-col items-center">
               <button 
                 onClick={startVoiceRecognition}
-                className={`p-3 md:p-4 rounded-xl border transition-all ${isListening ? "bg-orange-500 text-white border-orange-400 animate-pulse" : "bg-white/5 hover:bg-white/10 border-white/10 text-slate-400 hover:text-orange-500"}`}
+                className={`p-2 md:p-4 rounded-xl border transition-all ${isListening ? "bg-orange-500 text-white border-orange-400 animate-pulse" : "bg-white/5 hover:bg-white/10 border-white/10 text-slate-400 hover:text-orange-500"}`}
                 title="Comando de Voz (Atalho: V)"
               >
-                <Mic className="w-6 h-6" />
+                <Mic className="w-5 h-5 md:w-6 md:h-6" />
               </button>
               <span className="text-[8px] uppercase font-black text-slate-600 mt-1 hidden md:block">Voz</span>
             </div>
@@ -1089,7 +1089,7 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 className="max-w-7xl mx-auto h-full flex flex-col justify-center"
               >
-                <div className="grid grid-cols-3 gap-4 md:gap-12">
+                <div className="grid grid-cols-3 gap-2 md:gap-12">
                   {[
                     { id: "live", title: "TV", icon: Tv, color: "from-orange-500 to-orange-600", action: () => { setActiveSection("live"); setCurrentView("content"); } },
                     { id: "movies", title: "Filmes", icon: Film, color: "from-blue-500 to-blue-600", action: () => { setActiveSection("movies"); setCurrentView("content"); } },
@@ -1098,12 +1098,12 @@ export default function App() {
                     <button
                       key={item.id}
                       onClick={item.action}
-                      className={`group relative aspect-[4/5] sm:aspect-square md:aspect-[16/14] bg-slate-900 rounded-[1.5rem] sm:rounded-[3rem] md:rounded-[4rem] border-2 border-white/5 hover:border-orange-500 transition-all shadow-2xl flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 ${deviceMode === "android" ? "scale-105" : ""}`}
+                      className={`group relative aspect-[4/5] sm:aspect-square md:aspect-[16/14] bg-slate-900 rounded-2xl sm:rounded-[3rem] md:rounded-[4rem] border-2 border-white/5 hover:border-orange-500 transition-all shadow-2xl flex flex-col items-center justify-center p-2 sm:p-6 md:p-10 ${deviceMode === "android" ? "scale-105" : ""}`}
                     >
-                      <div className={`w-14 h-14 sm:w-24 sm:h-24 md:w-36 md:h-36 bg-gradient-to-br ${item.color} rounded-[1.25rem] sm:rounded-[2rem] md:rounded-[3rem] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500 shrink-0`}>
-                        <item.icon className="w-7 h-7 sm:w-12 sm:h-12 md:w-20 md:h-20 text-white" />
+                      <div className={`w-10 h-10 sm:w-24 sm:h-24 md:w-36 md:h-36 bg-gradient-to-br ${item.color} rounded-xl sm:rounded-[2rem] md:rounded-[3rem] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500 shrink-0`}>
+                        <item.icon className="w-5 h-5 sm:w-12 sm:h-12 md:w-20 md:h-20 text-white" />
                       </div>
-                      <h3 className={`font-black tracking-tight uppercase mt-4 sm:mt-6 md:mt-10 leading-none text-center ${deviceMode === "android" ? "text-lg sm:text-3xl md:text-5xl" : "text-sm sm:text-2xl md:text-4xl"}`}>{item.title}</h3>
+                      <h3 className={`font-black tracking-tight uppercase mt-2 sm:mt-6 md:mt-10 leading-none text-center ${deviceMode === "android" ? "text-xs sm:text-3xl md:text-5xl" : "text-[10px] sm:text-2xl md:text-4xl"}`}>{item.title}</h3>
                     </button>
                   ))}
                 </div>
@@ -1401,8 +1401,8 @@ export default function App() {
               </div>
             </div>
           ) : (
-            <div className="flex-1 p-4 md:p-8 space-y-10 overflow-y-auto custom-scrollbar">
-              <section className="relative aspect-video bg-black rounded-[2rem] md:rounded-[3rem] overflow-hidden border-4 border-white/5 shadow-2xl group">
+            <div className="flex-1 p-2 md:p-8 space-y-4 md:space-y-10 overflow-y-auto custom-scrollbar">
+              <section className="relative aspect-video bg-black rounded-xl md:rounded-[3rem] overflow-hidden border-2 md:border-4 border-white/5 shadow-2xl group">
                 {selectedChannel ? (
                   selectedChannel.url.startsWith("demo") ? (
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900">
@@ -1428,30 +1428,30 @@ export default function App() {
                 )}
               </section>
 
-              <section className="space-y-8">
-                <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar scroll-smooth">
+              <section className="space-y-4 md:space-y-8">
+                <div className="flex gap-2 md:gap-4 overflow-x-auto pb-2 md:pb-4 no-scrollbar scroll-smooth">
                   {groups.map((group, idx) => (
                     <button
                       key={idx}
                       onClick={() => setSelectedGroup(group)}
-                      className={`px-6 py-3 md:px-8 md:py-4 rounded-2xl text-base md:text-lg font-black whitespace-nowrap transition-all border-2 ${selectedGroup === group ? "bg-orange-500 border-orange-400 text-white shadow-lg" : "bg-slate-900 border-white/5 text-slate-400 hover:text-white"}`}
+                      className={`px-4 py-2 md:px-8 md:py-4 rounded-xl md:rounded-2xl text-xs md:text-lg font-black whitespace-nowrap transition-all border-2 ${selectedGroup === group ? "bg-orange-500 border-orange-400 text-white shadow-lg" : "bg-slate-900 border-white/5 text-slate-400 hover:text-white"}`}
                     >
                       {group} ({getGroupCount(group)})
                     </button>
                   ))}
                 </div>
 
-                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-8">
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-8">
                   {filteredChannels.slice(0, visibleCount).map((channel, idx) => (
                     <motion.button
                       key={idx}
                       whileHover={{ scale: 1.05, y: -5 }}
                       onClick={() => setSelectedChannel(channel)}
-                      className={`relative aspect-video rounded-2xl md:rounded-[2rem] overflow-hidden border-2 md:border-4 transition-all ${selectedChannel?.url === channel.url ? "border-orange-500 shadow-2xl" : "border-white/5 hover:border-white/20"}`}
+                      className={`relative aspect-video rounded-xl md:rounded-[2rem] overflow-hidden border-2 md:border-4 transition-all ${selectedChannel?.url === channel.url ? "border-orange-500 shadow-2xl" : "border-white/5 hover:border-white/20"}`}
                     >
                       <div className="absolute inset-0 bg-slate-900 flex items-center justify-center relative">
                         {localStorage.getItem("iptv_show_numbers") && channel.number && (
-                          <div className="absolute top-3 left-3 bg-orange-500 text-white text-xs font-black px-3 py-1 rounded-xl z-10 shadow-xl">
+                          <div className="absolute top-2 left-2 md:top-3 md:left-3 bg-orange-500 text-white text-[10px] md:text-xs font-black px-2 md:px-3 py-0.5 md:py-1 rounded-lg md:rounded-xl z-10 shadow-xl">
                             #{channel.number}
                           </div>
                         )}
@@ -1480,9 +1480,9 @@ export default function App() {
                         )}
                       </div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-                      <div className="absolute bottom-3 md:bottom-6 left-3 md:left-6 right-3 md:right-6">
-                        <p className="text-sm md:text-lg font-black truncate text-white leading-tight">{channel.name}</p>
-                        <p className="text-[10px] md:text-xs text-orange-400 uppercase font-black truncate mt-1">{channel.group}</p>
+                      <div className="absolute bottom-2 md:bottom-6 left-2 md:left-6 right-2 md:right-6">
+                        <p className="text-[10px] md:text-lg font-black truncate text-white leading-tight">{channel.name}</p>
+                        <p className="text-[8px] md:text-xs text-orange-400 uppercase font-black truncate mt-0.5 md:mt-1">{channel.group}</p>
                       </div>
                     </motion.button>
                   ))}
@@ -1501,10 +1501,10 @@ export default function App() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[200] bg-slate-950/90 backdrop-blur-xl flex items-center justify-center p-6"
           >
-            <div className="max-w-md w-full bg-slate-900 border-2 border-orange-500/30 rounded-[3rem] p-10 shadow-2xl text-center space-y-6">
-              <RefreshCw className="w-16 h-16 text-orange-500 animate-spin mx-auto" />
-              <h3 className="text-3xl font-black uppercase">Otimizador IA</h3>
-              <div className="text-left bg-black/40 p-6 rounded-2xl border border-white/5 font-mono text-sm space-y-2">
+            <div className="max-w-md w-full bg-slate-900 border-2 border-orange-500/30 rounded-3xl md:rounded-[3rem] p-6 md:p-10 shadow-2xl text-center space-y-4 md:space-y-6">
+              <RefreshCw className="w-12 h-12 md:w-16 md:h-16 text-orange-500 animate-spin mx-auto" />
+              <h3 className="text-2xl md:text-3xl font-black uppercase">Otimizador IA</h3>
+              <div className="text-left bg-black/40 p-4 md:p-6 rounded-2xl border border-white/5 font-mono text-xs md:text-sm space-y-1 md:space-y-2">
                 {aiLog.map((log, i) => <p key={i} className="text-slate-500">› {log}</p>)}
               </div>
             </div>
@@ -1514,14 +1514,14 @@ export default function App() {
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="fixed inset-0 z-[300] bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-6"
+            className="fixed inset-0 z-[300] bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-6"
           >
-            <div className="max-w-md w-full text-center space-y-8">
-              <div className="w-24 h-24 bg-orange-500 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-orange-500/30">
-                <Maximize className="w-12 h-12 text-white" />
+            <div className="max-w-md w-full text-center space-y-4 md:space-y-8">
+              <div className="w-16 h-16 md:w-24 md:h-24 bg-orange-500 rounded-2xl md:rounded-[2rem] flex items-center justify-center mx-auto mb-4 md:mb-6 shadow-2xl shadow-orange-500/30">
+                <Maximize className="w-8 h-8 md:w-12 md:h-12 text-white" />
               </div>
-              <h2 className="text-4xl font-black uppercase tracking-tighter">Modo Tela Cheia</h2>
-              <p className="text-slate-400 text-xl font-medium">
+              <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tighter">Modo Tela Cheia</h2>
+              <p className="text-slate-400 text-base md:text-xl font-medium">
                 Para uma melhor experiência no D7 Player, recomendamos o uso em tela cheia.
               </p>
               <button 
@@ -1529,13 +1529,13 @@ export default function App() {
                   toggleFullscreen();
                   setShowFullscreenOverlay(false);
                 }}
-                className="w-full py-6 bg-orange-500 hover:bg-orange-600 text-white font-black text-2xl rounded-[1.5rem] transition-all shadow-2xl shadow-orange-500/40 active:scale-95"
+                className="w-full py-4 md:py-6 bg-orange-500 hover:bg-orange-600 text-white font-black text-xl md:text-2xl rounded-2xl md:rounded-[1.5rem] transition-all shadow-2xl shadow-orange-500/40 active:scale-95"
               >
                 ENTRAR EM TELA CHEIA
               </button>
               <button 
                 onClick={() => setShowFullscreenOverlay(false)}
-                className="text-slate-600 hover:text-slate-400 font-bold uppercase tracking-widest text-sm transition-colors"
+                className="text-slate-600 hover:text-slate-400 font-bold uppercase tracking-widest text-[10px] md:text-sm transition-colors"
               >
                 Agora não
               </button>
