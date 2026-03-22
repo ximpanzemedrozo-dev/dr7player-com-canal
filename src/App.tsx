@@ -30,7 +30,9 @@ import {
   Hash,
   Keyboard,
   Mic,
-  MicOff
+  MicOff,
+  Maximize,
+  Minimize
 } from "lucide-react";
 import Hls from "hls.js";
 
@@ -81,6 +83,8 @@ export default function App() {
   const [customChannelNumbers, setCustomChannelNumbers] = useState<Record<string, number>>({});
   const [isDialing, setIsDialing] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showFullscreenOverlay, setShowFullscreenOverlay] = useState(false);
   const [editingChannelForNumber, setEditingChannelForNumber] = useState<Channel | null>(null);
   const dialTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -155,6 +159,33 @@ export default function App() {
     setDialedNumber("");
     setIsDialing(false);
   };
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+      });
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    
+    // Check if we should show the overlay (only if not already in fullscreen and not in standalone mode)
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+    if (!document.fullscreenElement && !isStandalone) {
+      setShowFullscreenOverlay(true);
+    }
+
+    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -1029,6 +1060,16 @@ export default function App() {
             </button>
             <div className="flex flex-col items-center">
               <button 
+                onClick={toggleFullscreen}
+                className="p-3 md:p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 text-slate-400 hover:text-orange-500 transition-all"
+                title="Tela Cheia"
+              >
+                {isFullscreen ? <Minimize className="w-6 h-6" /> : <Maximize className="w-6 h-6" />}
+              </button>
+              <span className="text-[8px] uppercase font-black text-slate-600 mt-1 hidden md:block">Tela</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <button 
                 onClick={startVoiceRecognition}
                 className={`p-3 md:p-4 rounded-xl border transition-all ${isListening ? "bg-orange-500 text-white border-orange-400 animate-pulse" : "bg-white/5 hover:bg-white/10 border-white/10 text-slate-400 hover:text-orange-500"}`}
                 title="Comando de Voz (Atalho: V)"
@@ -1466,6 +1507,38 @@ export default function App() {
               <div className="text-left bg-black/40 p-6 rounded-2xl border border-white/5 font-mono text-sm space-y-2">
                 {aiLog.map((log, i) => <p key={i} className="text-slate-500">› {log}</p>)}
               </div>
+            </div>
+          </motion.div>
+        )}
+        {showFullscreenOverlay && !isFullscreen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-[300] bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-6"
+          >
+            <div className="max-w-md w-full text-center space-y-8">
+              <div className="w-24 h-24 bg-orange-500 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-orange-500/30">
+                <Maximize className="w-12 h-12 text-white" />
+              </div>
+              <h2 className="text-4xl font-black uppercase tracking-tighter">Modo Tela Cheia</h2>
+              <p className="text-slate-400 text-xl font-medium">
+                Para uma melhor experiência no D7 Player, recomendamos o uso em tela cheia.
+              </p>
+              <button 
+                onClick={() => {
+                  toggleFullscreen();
+                  setShowFullscreenOverlay(false);
+                }}
+                className="w-full py-6 bg-orange-500 hover:bg-orange-600 text-white font-black text-2xl rounded-[1.5rem] transition-all shadow-2xl shadow-orange-500/40 active:scale-95"
+              >
+                ENTRAR EM TELA CHEIA
+              </button>
+              <button 
+                onClick={() => setShowFullscreenOverlay(false)}
+                className="text-slate-600 hover:text-slate-400 font-bold uppercase tracking-widest text-sm transition-colors"
+              >
+                Agora não
+              </button>
             </div>
           </motion.div>
         )}
