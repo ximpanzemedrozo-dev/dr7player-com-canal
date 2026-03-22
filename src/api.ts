@@ -39,7 +39,15 @@ app.get("/api/proxy-stream", async (req, res) => {
 
     const protocol = targetUrl.startsWith("https") ? https : http;
     
-    protocol.get(targetUrl, (streamResponse) => {
+    const options = {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': '*/*',
+        'Connection': 'keep-alive'
+      }
+    };
+
+    protocol.get(targetUrl, options, (streamResponse) => {
       if (streamResponse.statusCode && [301, 302, 307, 308].includes(streamResponse.statusCode)) {
         const location = streamResponse.headers.location;
         if (location) {
