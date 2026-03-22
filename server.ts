@@ -86,6 +86,10 @@ async function startServer() {
     
     // Fallback for SPA in dev mode
     app.get('*', async (req, res, next) => {
+      // If the request looks like an asset (has an extension), return 404 with plain text
+      if (req.path.includes('.') && !req.path.endsWith('.html')) {
+        return res.status(404).type('text/plain').send('Not found');
+      }
       const url = req.originalUrl;
       try {
         let template = await (await import('fs')).readFileSync(path.resolve(process.cwd(), 'index.html'), 'utf-8');
