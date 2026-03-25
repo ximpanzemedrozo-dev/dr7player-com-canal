@@ -89,6 +89,24 @@ export default function App() {
   const dialTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    const lockOrientation = async () => {
+      try {
+        // @ts-ignore
+        if (screen.orientation && screen.orientation.lock) {
+          // @ts-ignore
+          await screen.orientation.lock('landscape').catch(() => {});
+        }
+      } catch (e) {
+        // Ignore errors as this is a progressive enhancement
+      }
+    };
+    lockOrientation();
+    
+    // Also try to request fullscreen on first user interaction if needed, 
+    // but for now just locking orientation is a good start.
+  }, []);
+
   const startVoiceRecognition = () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -1389,6 +1407,87 @@ export default function App() {
                     ))}
                   </div>
                 </div>
+              </div>
+            </div>
+          ) : layoutType === "classic" ? (
+            <div className="flex-1 flex flex-col md:flex-row overflow-hidden bg-slate-950">
+              {/* Sidebar de Grupos e Canais (Classic) */}
+              <div className="w-full md:w-80 lg:w-96 bg-slate-900/50 border-r border-white/5 flex flex-col overflow-hidden">
+                <div className="p-4 border-b border-white/5 bg-slate-900/80 backdrop-blur-md">
+                  <div className="flex items-center gap-3 mb-4">
+                    <List className="w-5 h-5 text-orange-500" />
+                    <h3 className="font-black uppercase tracking-tighter">Lista de Canais</h3>
+                  </div>
+                  <select 
+                    value={selectedGroup}
+                    onChange={(e) => setSelectedGroup(e.target.value)}
+                    className="w-full bg-slate-800 border border-white/10 rounded-xl p-3 text-sm font-bold outline-none focus:border-orange-500 transition-all"
+                  >
+                    {groups.map(g => <option key={g} value={g}>{g} ({getGroupCount(g)})</option>)}
+                  </select>
+                </div>
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
+                  {filteredChannels.map((channel, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setSelectedChannel(channel)}
+                      className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all group ${selectedChannel?.url === channel.url ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "hover:bg-white/5 text-slate-400"}`}
+                    >
+                      <div className="w-10 h-10 bg-black/40 rounded-lg flex items-center justify-center shrink-0 overflow-hidden border border-white/5">
+                        {channel.logo ? (
+                          <img src={channel.logo} alt="" className="w-full h-full object-contain" referrerPolicy="no-referrer" loading="lazy" />
+                        ) : (
+                          <Tv className="w-5 h-5" />
+                        )}
+                      </div>
+                      <div className="flex-1 text-left overflow-hidden">
+                        <p className="text-sm font-bold truncate uppercase tracking-tighter leading-tight">{channel.name}</p>
+                        <p className={`text-[10px] uppercase font-black opacity-50 tracking-widest ${selectedChannel?.url === channel.url ? "text-white" : "text-slate-500"}`}>{channel.group}</p>
+                      </div>
+                      {selectedChannel?.url === channel.url && <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Player Area (Classic) */}
+              <div className="flex-1 flex flex-col bg-black relative">
+                <div className="flex-1 flex items-center justify-center relative bg-slate-950">
+                  {selectedChannel ? (
+                    selectedChannel.url.startsWith("demo") ? (
+                      <div className="relative z-10 text-center p-8">
+                        <div className="w-24 h-24 bg-orange-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-orange-500/20">
+                          <Play className="w-12 h-12 text-orange-500 animate-pulse" />
+                        </div>
+                        <h3 className="text-4xl font-black uppercase tracking-tighter">{selectedChannel.name}</h3>
+                        <p className="text-slate-500 mt-2 font-bold uppercase tracking-widest text-xs">Modo Demo: Reprodução simulada</p>
+                      </div>
+                    ) : (
+                      <video ref={videoRef} className="w-full h-full object-contain" controls autoPlay playsInline />
+                    )
+                  ) : (
+                    <div className="text-center text-slate-800">
+                      <MonitorPlay className="w-32 h-32 mb-6 opacity-10 mx-auto" />
+                      <p className="text-2xl font-black uppercase tracking-tighter opacity-20">Selecione um canal na lista para assistir</p>
+                    </div>
+                  )}
+                </div>
+                {selectedChannel && (
+                  <div className="p-8 bg-slate-900/95 border-t border-white/5 backdrop-blur-2xl flex items-center justify-between">
+                    <div className="space-y-1">
+                      <h3 className="text-3xl font-black uppercase tracking-tighter leading-none">{selectedChannel.name}</h3>
+                      <p className="text-orange-500 font-black uppercase text-sm tracking-[0.3em]">{selectedChannel.group}</p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <button 
+                        onClick={() => toggleFavorite(selectedChannel.name)}
+                        className={`p-4 rounded-2xl border-2 transition-all ${favorites.includes(selectedChannel.name) ? "bg-orange-500 border-orange-400 text-white" : "bg-white/5 border-white/5 text-slate-400 hover:text-white"}`}
+                      >
+                        <Zap className={`w-6 h-6 ${favorites.includes(selectedChannel.name) ? "fill-current" : ""}`} />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ) : (

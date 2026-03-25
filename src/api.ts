@@ -1,4 +1,4 @@
-const BASE_PROXY_URL = 'https://d7player.discloud.app/api/proxy-m3u';
+const BASE_PROXY_URL = '/api/proxy-m3u';
 
 export const fetchFromIPTV = async (server: string, params: object) => {
   try {
@@ -6,7 +6,7 @@ export const fetchFromIPTV = async (server: string, params: object) => {
     const queryParams = new URLSearchParams(params as any).toString();
     const fullUrl = `${server}/player_api.php?${queryParams}`;
 
-    // Passa tudo pelo nosso novo Proxy na Discloud
+    // Passa tudo pelo nosso Proxy do Netlify
     const response = await fetch(`${BASE_PROXY_URL}?url=${encodeURIComponent(fullUrl)}`);
     
     if (!response.ok) throw new Error('Erro na rede');
