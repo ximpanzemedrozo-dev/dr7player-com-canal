@@ -1,0 +1,157 @@
+#EXTM3U
+#EXT-X-SESSION-DATA:DATA-ID="com.xui.1_5_13"
+#EXTINF:-1 xui-id="286" tvg-id="" tvg-name="RECORD TV A CRÍTICA HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV A CRÍTICA HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwyP1o4-264XHmZ-YUShsrwU/ts
+#EXTINF:-1 xui-id="287" tvg-id="" tvg-name="RECORD TV A CRÍTICA SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV A CRÍTICA SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwzkuttDtVS2aOSQwJQCIDvs/ts
+#EXTINF:-1 xui-id="288" tvg-id="Record BA HD" tvg-name="RECORD TV BAURU HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV BAURU HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwyqPd8IHxjEWSb5cd7gUX3A/ts
+#EXTINF:-1 xui-id="289" tvg-id="Record BA HD" tvg-name="RECORD TV BAURU SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV BAURU SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwy0cQTwxcn4iX-KrkGS5yrg/ts
+#EXTINF:-1 xui-id="290" tvg-id="Record MG SD" tvg-name="RECORD TV BELEM HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV BELEM HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwwN1CqsotBjPoPZv7SWebys/ts
+#EXTINF:-1 xui-id="291" tvg-id="Record MG SD" tvg-name="RECORD TV BELEM SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV BELEM SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw38UA6YYqE5RBor47FrNEiM/ts
+#EXTINF:-1 xui-id="292" tvg-id="Rede Brasil SD" tvg-name="RECORD TV BRASÍLIA HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV BRASÍLIA HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw-bt8-yeBl1CLKnPPJXQ4Oc/ts
+#EXTINF:-1 xui-id="293" tvg-id="Rede Brasil SD" tvg-name="RECORD TV BRASÍLIA SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV BRASÍLIA SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw_FgKk_QAQ4HhZIDBg758u4/ts
+#EXTINF:-1 xui-id="294" tvg-id="Record BA HD" tvg-name="RECORD TV CABRÁLIA HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV CABRÁLIA HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw16IajUaaEiqX_xHHn6aDaA/ts
+#EXTINF:-1 xui-id="295" tvg-id="Record BA HD" tvg-name="RECORD TV CABRÁLIA SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV CABRÁLIA SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwx46421zK0t8PvPyWU-bdRo/ts
+#EXTINF:-1 xui-id="296" tvg-id="" tvg-name="RECORD TV CAMPO DOS GOYTACAZES HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV CAMPO DOS GOYTACAZES HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwzEd2GdswyxuDPHDO3JvPVU/ts
+#EXTINF:-1 xui-id="297" tvg-id="" tvg-name="RECORD TV CAMPO DOS GOYTACAZES SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV CAMPO DOS GOYTACAZES SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw4mUsJVbBr_br8A4qEoe4H0/ts
+#EXTINF:-1 xui-id="298" tvg-id="" tvg-name="RECORD TV CORREIO HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV CORREIO HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw3plMfaXRbcFxVsCm7OJ2hc/ts
+#EXTINF:-1 xui-id="299" tvg-id="" tvg-name="RECORD TV CORREIO SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV CORREIO SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwz7msabx_K2ZCA648NBU29Q/ts
+#EXTINF:-1 xui-id="300" tvg-id="Record SP FHD" tvg-name="RECORD TV GOIAS HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV GOIAS HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwzY7Y9Lyek_Ld121AE4l7GA/ts
+#EXTINF:-1 xui-id="301" tvg-id="Record SP FHD" tvg-name="RECORD TV GOIAS SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV GOIAS SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwxYNDeIas2hxTKSrVkgFhx4/ts
+#EXTINF:-1 xui-id="302" tvg-id="" tvg-name="RECORD TV BAHIA ITAPOAN HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV BAHIA ITAPOAN HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw2o457UQWk70FVDjVwGRep0/ts
+#EXTINF:-1 xui-id="303" tvg-id="" tvg-name="RECORD TV BAHIA ITAPOAN SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV BAHIA ITAPOAN SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw5gBw5SGUTFrOJl2ld1Hyuo/ts
+#EXTINF:-1 xui-id="304" tvg-id="Record News HD" tvg-name="RECORD TV MANAUS HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV MANAUS HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwxPIl5PN90gLFy-Hr7pkWAE/ts
+#EXTINF:-1 xui-id="305" tvg-id="Record News HD" tvg-name="RECORD TV MANAUS SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV MANAUS SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw3wlAihPj6I7Z9htKS6Ga8g/ts
+#EXTINF:-1 xui-id="306" tvg-id="Record News HD" tvg-name="RECORD TV MINAS HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV MINAS HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwwtofUAyhAdcSZ01dy8U54I/ts
+#EXTINF:-1 xui-id="307" tvg-id="Record News HD" tvg-name="RECORD TV MINAS SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV MINAS SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw-7bpU2VE6tV0qmmHSWUIkE/ts
+#EXTINF:-1 xui-id="308" tvg-id="Record 4K" tvg-name="RECORD TV NDTV HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV NDTV HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw_YZbAVLV9L55Xfgi9BtJ-4/ts
+#EXTINF:-1 xui-id="309" tvg-id="Record 4K" tvg-name="RECORD TV NDTV SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV NDTV SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwxvlXGTuiwrwx6vBS6-rk98/ts
+#EXTINF:-1 xui-id="310" tvg-id="Record RS HD" tvg-name="RECORD TV RICTV HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV RICTV HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwy1ati1bZJCC1rDsc3WJeWw/ts
+#EXTINF:-1 xui-id="311" tvg-id="Record RS HD" tvg-name="RECORD TV RICTV SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV RICTV SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw7aheSTCyDkvDG38Tuht5uo/ts
+#EXTINF:-1 xui-id="312" tvg-id="Record RS HD" tvg-name="RECORD TV RS HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV RS HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw86LRsSV7UV-afyagJW8xCY/ts
+#EXTINF:-1 xui-id="313" tvg-id="Record RS HD" tvg-name="RECORD TV RS SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV RS SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw00gjQW7sAPEoO8Ef8oypqs/ts
+#EXTINF:-1 xui-id="314" tvg-id="Globo Eptv Ribeirão Preto FHD" tvg-name="RECORD TV RIBEIRÃO PRETO HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV RIBEIRÃO PRETO HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw3vm-xH0qB2lXTOPCn1p6JE/ts
+#EXTINF:-1 xui-id="315" tvg-id="Globo Eptv Ribeirão Preto FHD" tvg-name="RECORD TV RIBEIRÃO PRETO SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV RIBEIRÃO PRETO SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw86w4dBVSwcFzmcoNfcMhf4/ts
+#EXTINF:-1 xui-id="316" tvg-id="" tvg-name="RECORD TV RIO PRETO HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV RIO PRETO HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwwxV59JEs4wNKFkgxps2feE/ts
+#EXTINF:-1 xui-id="317" tvg-id="" tvg-name="RECORD TV RIO PRETO SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV RIO PRETO SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw4HZNR_eJAzS5UPf8RuFVIY/ts
+#EXTINF:-1 xui-id="318" tvg-id="" tvg-name="RECORD TV RIO DE JANEIRO FHD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV RIO DE JANEIRO FHD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwwAIwPqj_FWuYOK5S1G0UTs/ts
+#EXTINF:-1 xui-id="319" tvg-id="" tvg-name="RECORD TV RIO DE JANEIRO HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV RIO DE JANEIRO HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw226fYXflsb9S-6qMBB4Iaw/ts
+#EXTINF:-1 xui-id="320" tvg-id="" tvg-name="RECORD TV RIO DE JANEIRO SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV RIO DE JANEIRO SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw3pwfRFkH1fEENyp1k5jqLQ/ts
+#EXTINF:-1 xui-id="321" tvg-id="Record SP FHD" tvg-name="RECORD TV SP FHD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV SP FHD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw-9g93h2vv0lPDzO7zpXnNQ/ts
+#EXTINF:-1 xui-id="322" tvg-id="Record SP FHD" tvg-name="RECORD TV SP HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV SP HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw5v1ZUP-cqzAgxMQAOBey1E/ts
+#EXTINF:-1 xui-id="323" tvg-id="Record SP FHD" tvg-name="RECORD TV SP SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV SP SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw1Q0OF6YpHatpOozXUsf8z0/ts
+#EXTINF:-1 xui-id="324" tvg-id="" tvg-name="RECORD TV SANTOS E VALE HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV SANTOS E VALE HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwyJCX81zrznzFjkzPvJ7MYc/ts
+#EXTINF:-1 xui-id="325" tvg-id="" tvg-name="RECORD TV SANTOS E VALE SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV SANTOS E VALE SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwx75w94SUhpeokItF0yStSQ/ts
+#EXTINF:-1 xui-id="326" tvg-id="" tvg-name="RECORD TV THATHI CAMPINAS HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV THATHI CAMPINAS HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw15A6WeWTfUhZQYhp0Wbzf0/ts
+#EXTINF:-1 xui-id="327" tvg-id="" tvg-name="RECORD TV THATHI CAMPINAS SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV THATHI CAMPINAS SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw6_LOBdBI65_Icea2HoMMPo/ts
+#EXTINF:-1 xui-id="328" tvg-id="" tvg-name="RECORD TV TROPICAL HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV TROPICAL HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw9LDPdO7mBKLizx4EUTNYOA/ts
+#EXTINF:-1 xui-id="329" tvg-id="" tvg-name="RECORD TV TROPICAL SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV TROPICAL SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwwH0yL3eK2QzEXJubhoALBw/ts
+#EXTINF:-1 xui-id="330" tvg-id="" tvg-name="RECORD TV ATALAIA HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV ATALAIA HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw8V4kAkEqHIt9d8fBHJlheg/ts
+#EXTINF:-1 xui-id="331" tvg-id="" tvg-name="RECORD TV ATALAIA SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV ATALAIA SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwwJDnzVD2sI7_pYjwjHf3W4/ts
+#EXTINF:-1 xui-id="332" tvg-id="" tvg-name="RECORD TV CIDADE SÃO LUIS HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV CIDADE SÃO LUIS HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw7e-1ip0yACzEOebqpTBjdE/ts
+#EXTINF:-1 xui-id="333" tvg-id="" tvg-name="RECORD TV CIDADE SÃO LUIS SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV CIDADE SÃO LUIS SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwzPS-dprVbCKVUbJoIAj7HE/ts
+#EXTINF:-1 xui-id="334" tvg-id="" tvg-name="RECORD TV PAJUÇARA HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV PAJUÇARA HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw0UMYFxAAGBd0iKYt-cwsIM/ts
+#EXTINF:-1 xui-id="335" tvg-id="" tvg-name="RECORD TV PAJUÇARA SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD TV PAJUÇARA SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSww7aaauPi-Dt-fKXA0YFrDs/ts
+#EXTINF:-1 xui-id="336" tvg-id="Record MG SD" tvg-name="RECORD MT HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/record.png" group-title="Canais | Record TV",RECORD MT HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwy46Z_cooNgffQRdb0lJtJc/ts
+#EXTINF:-1 xui-id="621" tvg-id="175" tvg-name="Cultura FHD" tvg-logo="http://www.fontedecanais.tv/logos/canais/cultura.png" group-title="Canais | Abertos",Cultura FHD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw4-T4d_0OZhs2Qz9Wi2NMFE/ts
+#EXTINF:-1 xui-id="622" tvg-id="175" tvg-name="Cultura HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/cultura.png" group-title="Canais | Abertos",Cultura HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSww4xzELkOnE3xzPDHrRLG5U/ts
+#EXTINF:-1 xui-id="623" tvg-id="175" tvg-name="Cultura SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/cultura.png" group-title="Canais | Abertos",Cultura SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw4p1Ic47_9brvOod8rB7NXQ/ts
+#EXTINF:-1 xui-id="624" tvg-id="95" tvg-name="Futura FHD" tvg-logo="http://www.fontedecanais.tv/logos/canais/futura.png" group-title="Canais | Abertos",Futura FHD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw_tKsAMLEsCWDqsVCEUkVBc/ts
+#EXTINF:-1 xui-id="625" tvg-id="95" tvg-name="Futura HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/futura.png" group-title="Canais | Abertos",Futura HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwzZaxbcfb7uS86ztohsZ2pM/ts
+#EXTINF:-1 xui-id="626" tvg-id="95" tvg-name="Futura SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/futura.png" group-title="Canais | Abertos",Futura SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw-VfT484GdrN8unjEr-BDFE/ts
+#EXTINF:-1 xui-id="627" tvg-id="Rede TV 4K" tvg-name="RedeTV! FHD" tvg-logo="http://www.fontedecanais.tv/logos/canais/redetv.png" group-title="Canais | Abertos",RedeTV! FHD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw7p1Nm-dzl5nZFih5vFMmAg/ts
+#EXTINF:-1 xui-id="628" tvg-id="Rede TV 4K" tvg-name="RedeTV! HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/redetv.png" group-title="Canais | Abertos",RedeTV! HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw4ofFn5O3gHcLLwQqD7_Wyc/ts
+#EXTINF:-1 xui-id="629" tvg-id="Rede TV 4K" tvg-name="RedeTV! SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/redetv.png" group-title="Canais | Abertos",RedeTV! SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw9dx-waQdiOjaVyoeSQjCyA/ts
+#EXTINF:-1 xui-id="633" tvg-id="328" tvg-name="Canal do Boi" tvg-logo="https://www.fontedecanais.tv/logos/canais/canaldoboi.png" group-title="Canais | Abertos",Canal do Boi
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw5bcn4ohT73kfQxqXlWZz-c/ts
+#EXTINF:-1 xui-id="634" tvg-id="338" tvg-name="Canal Rural" tvg-logo="https://www.fontedecanais.tv/logos/canais/canalrural.png" group-title="Canais | Abertos",Canal Rural
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwxUy-Tgkk7-MS4n9sB7PM6c/ts
+#EXTINF:-1 xui-id="635" tvg-id="61" tvg-name="TV Brasil" tvg-logo="https://www.fontedecanais.tv/logos/canais/tvbrasil.png" group-title="Canais | Abertos",TV Brasil
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw2KZlcvpkn6ijxNWvjtM0qc/ts
+#EXTINF:-1 xui-id="636" tvg-id="TV Camara SD" tvg-name="TV Camara" tvg-logo="https://www.fontedecanais.tv/logos/canais/tvcamara.png" group-title="Canais | Abertos",TV Camara
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwzS0KDmAkZgRwSOpbKpn6zo/ts
+#EXTINF:-1 xui-id="638" tvg-id="TV Senado SD" tvg-name="TV Senado" tvg-logo="https://www.fontedecanais.tv/logos/canais/tvsenado.png" group-title="Canais | Abertos",TV Senado
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw4n_uoeSbDZe92BJ5buOSP0/ts
+#EXTINF:-1 xui-id="639" tvg-id="53" tvg-name="TV Gazeta" tvg-logo="http://www.fontedecanais.tv/logos/canais/tvgazeta.png" group-title="Canais | Abertos",TV Gazeta
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw9VDIGRwQMic_eIVCQBCZAM/ts
+#EXTINF:-1 xui-id="640" tvg-id="80" tvg-name="Agro+" tvg-logo="http://www.fontedecanais.tv/logos/canais/agromais.png" group-title="Canais | Abertos",Agro+
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwxhohtG0TWXweE5UkoatS2s/ts
+#EXTINF:-1 xui-id="641" tvg-id="Terra Viva SD" tvg-name="Terra Viva" tvg-logo="https://i.imgur.com/0idNHMj.png" group-title="Canais | Abertos",Terra Viva
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw0UdFYAt6TalQNrkpa4J8w8/ts
+#EXTINF:-1 xui-id="642" tvg-id="" tvg-name="TVE Bahia" tvg-logo="http://i.imgur.com/IWGyp65.jpeg" group-title="Canais | Abertos",TVE Bahia
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwx4XVWL2oIXcmk71bPTzm5M/ts
+#EXTINF:-1 xui-id="643" tvg-id="6" tvg-name="Band News FHD" tvg-logo="http://www.fontedecanais.tv/logos/canais/bandnews.png" group-title="Canais | Notícias",Band News FHD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw2khmWDWPxgZjH2TRc2fWSw/ts
+#EXTINF:-1 xui-id="644" tvg-id="6" tvg-name="Band News HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/bandnews.png" group-title="Canais | Notícias",Band News HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSwwV32SVYLUczNi9GpKMybzo/ts
+#EXTINF:-1 xui-id="645" tvg-id="6" tvg-name="Band News SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/bandnews.png" group-title="Canais | Notícias",Band News SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw2cgrNBxOnVui15RIzbzzts/ts
+#EXTINF:-1 xui-id="646" tvg-id="77" tvg-name="CNN Brasil FHD" tvg-logo="http://www.fontedecanais.tv/logos/canais/cnnbrasil.png" group-title="Canais | Notícias",CNN Brasil FHD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw_W9miKeLGEhbbB-Bu5FgOM/ts
+#EXTINF:-1 xui-id="647" tvg-id="77" tvg-name="CNN Brasil HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/cnnbrasil.png" group-title="Canais | Notícias",CNN Brasil HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw3CWh2ZcfUQTVgSBloFkZFw/ts
+#EXTINF:-1 xui-id="648" tvg-id="77" tvg-name="CNN Brasil SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/cnnbrasil.png" group-title="Canais | Notícias",CNN Brasil SD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw44-BxCd49O_zpNToMdp26I/ts
+#EXTINF:-1 xui-id="649" tvg-id="78" tvg-name="Globo News FHD" tvg-logo="http://www.fontedecanais.tv/logos/canais/globonews.png" group-title="Canais | Notícias",Globo News FHD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSw1IavdKLzHesQJe8glyVxWE/ts
+#EXTINF:-1 xui-id="650" tvg-id="78" tvg-name="Globo News HD" tvg-logo="http://www.fontedecanais.tv/logos/canais/globonews.png" group-title="Canais | Notícias",Globo News HD
+http://golive.sbs:80/play/JsrUVtpWgRx1rChawwkSww_gyRJ5rWNGVKb6kZ4ltMk/ts
+#EXTINF:-1 xui-id="651" tvg-id="78" tvg-name="Globo News SD" tvg-logo="http://www.fontedecanais.tv/logos/canais/globonews.png" group-title="Canais
