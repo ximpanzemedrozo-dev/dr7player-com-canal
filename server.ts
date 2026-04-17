@@ -18,15 +18,27 @@ async function startServer() {
     const targetUrl = req.query.url as string;
     if (!targetUrl) return res.status(400).json({ error: "URL ausente" });
 
+    // Set CORS headers for SS IPTV compatibility
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
     try {
       const response = await axios.get(targetUrl, {
-        timeout: 20000,
-        responseType: targetUrl.includes('player_api.php') ? 'json' : 'text',
-        headers: { 'User-Agent': 'IPTVSmartersPlayer', 'Accept': '*/*' },
+        timeout: 30000,
+        responseType: 'text',
+        headers: { 
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+          'Accept': '*/*' 
+        },
         httpsAgent
       });
+      
+      // If the content is M3U, we might want to ensure it's served as text/plain or application/mpegurl
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
       res.send(response.data);
     } catch (error: any) {
+      console.error("Proxy error:", error.message);
       res.status(502).json({ error: "Erro no proxy", details: error.message });
     }
   });
@@ -36,7 +48,11 @@ async function startServer() {
     const targetUrl = req.query.url as string;
     if (!targetUrl) return res.status(400).send("URL ausente");
 
-    const protocol = targetUrl.startsWith("https") ? https : https; // Use https for both or handle appropriately
+    // Set CORS for browsers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+
+    const protocol = targetUrl.startsWith("https") ? https : https;
     // For simplicity in dev, we can just redirect or pipe. 
     // But usually, a simple redirect works if the client can handle it, 
     // or we pipe the stream.
@@ -60,21 +76,6 @@ async function startServer() {
     : path.join(process.cwd(), "public");
 
   console.log(`Serving static files from: ${staticPath}`);
-
-  // PWA ROUTES - Serve from the determined static path
-  app.get("/manifest.json", (req, res) => {
-    res.setHeader('Content-Type', 'application/manifest+json');
-    res.sendFile(path.join(staticPath, "manifest.json"));
-  });
-
-  app.get("/sw.js", (req, res) => {
-    res.setHeader('Content-Type', 'application/javascript');
-    res.sendFile(path.join(staticPath, "sw.js"));
-  });
-
-  app.get("/pwa-test", (req, res) => {
-    res.send(`SERVER IS ALIVE! Mode: ${process.env.NODE_ENV}. Path: ${staticPath}`);
-  });
 
   // Vite middleware for development
   if (!isProd) {

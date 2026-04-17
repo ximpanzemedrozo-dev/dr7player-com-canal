@@ -15,25 +15,8 @@
     padding-left: env(safe-area-inset-left);
   }
 
-  /* Force landscape-like view on mobile portrait */
-  @media screen and (max-width: 768px) and (orientation: portrait) {
-    body {
-      overflow: hidden;
-      width: 100vw;
-      height: 100vh;
-      position: fixed;
-    }
-    #root {
-      width: 100vh;
-      height: 100vw;
-      transform: rotate(90deg);
-      transform-origin: top left;
-      position: absolute;
-      top: 0;
-      left: 100vw;
-      overflow: hidden;
-    }
-  }
+  /* Force landscape-like view on mobile portrait (REMOVED - Let the browser handle rotation naturally) */
+  /* @media screen and (max-width: 768px) and (orientation: portrait) { ... } */
 
   /* Optimize for low-end devices */
   * {
