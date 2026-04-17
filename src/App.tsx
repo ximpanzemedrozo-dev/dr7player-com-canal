@@ -54,6 +54,8 @@ export default function App() {
   const [isParsing, setIsParsing] = useState(false);
   const [playerEngine, setPlayerEngine] = useState<"hls" | "native" | "proxy">("hls");
 
+  const [isSearching, setIsSearching] = useState(false);
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
 
@@ -73,6 +75,11 @@ export default function App() {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Reset visible count when filters change
+  useEffect(() => {
+    setVisibleCount(40);
+  }, [searchQuery, activeSection, selectedGroup, activeTab]);
 
   const toggleFavorite = (url: string) => {
     const newFavs = favorites.includes(url) 
@@ -233,13 +240,30 @@ export default function App() {
   }, [channels, activeSection]);
 
   const filteredChannels = React.useMemo(() => {
-    const query = searchQuery.toLowerCase();
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) {
+      return channels.filter(c => {
+        if (c.category !== activeSection) return false;
+        if (activeTab === "favorites" && !favorites.includes(c.url)) return false;
+        if (selectedGroup !== "Todos" && c.group !== selectedGroup) return false;
+        return true;
+      });
+    }
+
+    // When searching, we do a global search across all categories/groups
     return channels.filter(c => {
-      if (c.category !== activeSection) return false;
+      const matchName = c.name.toLowerCase().includes(query);
+      const matchGroup = c.group.toLowerCase().includes(query);
+      
+      // Filter by favorites if on favorites tab, otherwise global
       if (activeTab === "favorites" && !favorites.includes(c.url)) return false;
-      if (query === "" && selectedGroup !== "Todos" && c.group !== selectedGroup) return false;
-      if (query !== "" && !c.name.toLowerCase().includes(query)) return false;
-      return true;
+      
+      return matchName || matchGroup;
+    }).sort((a, b) => {
+      // Prioritize current section matches
+      if (a.category === activeSection && b.category !== activeSection) return -1;
+      if (a.category !== activeSection && b.category === activeSection) return 1;
+      return 0;
     });
   }, [channels, activeSection, searchQuery, selectedGroup, activeTab, favorites]);
 
@@ -344,7 +368,7 @@ export default function App() {
             <div className="w-20 h-20 bg-orange-500 rounded-3xl flex items-center justify-center mb-6 shadow-lg shadow-orange-500/20">
               <Tv className="w-10 h-10 text-white" />
             </div>
-            <h1 className="text-4xl font-black text-white tracking-tighter uppercase">D7 Player</h1>
+            <h1 className="text-4xl font-black text-white tracking-tighter uppercase">D7 Web Player</h1>
             <p className="text-slate-400 mt-2 font-medium">Sua experiência premium de IPTV</p>
           </div>
 
@@ -521,7 +545,7 @@ export default function App() {
             <Tv className="w-5 h-5 md:w-6 md:h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-lg md:text-xl font-black tracking-tighter uppercase">D7 Player</h1>
+            <h1 className="text-lg md:text-xl font-black tracking-tighter uppercase">D7 Web Player</h1>
             <p className="text-[8px] md:text-[10px] text-slate-500 font-bold tracking-[0.2em] uppercase">{activeSection}</p>
           </div>
         </div>
@@ -531,11 +555,19 @@ export default function App() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-orange-500 transition-colors" />
             <input 
               type="text"
-              placeholder="Buscar conteúdos..."
-              className="w-full bg-slate-950/50 border border-white/5 rounded-2xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all text-sm"
+              placeholder="Buscar conteúdos em toda a lista..."
+              className="w-full bg-slate-950/50 border border-white/5 rounded-2xl py-3 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all text-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+            {searchQuery && (
+              <button 
+                onClick={() => setSearchQuery("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <X className="w-4 h-4 text-slate-500" />
+              </button>
+            )}
           </div>
         </div>
 
@@ -544,17 +576,51 @@ export default function App() {
             <p className="text-sm font-bold">{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
             <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">{currentTime.toLocaleDateString([], { weekday: 'short', day: '2-digit', month: 'short' })}</p>
           </div>
-          <button onClick={() => {
-            const query = prompt("O que deseja buscar?");
-            if (query !== null) setSearchQuery(query);
-          }} className="md:hidden p-2.5 bg-slate-800 rounded-xl">
-            <Search className="w-5 h-5 text-slate-400" />
+          <button 
+            onClick={() => setIsSearching(!isSearching)} 
+            className="md:hidden p-2.5 bg-slate-800 rounded-xl"
+          >
+            {isSearching ? <X className="w-5 h-5 text-orange-500" /> : <Search className="w-5 h-5 text-slate-400" />}
           </button>
           <button onClick={logout} className="p-2.5 md:p-3 bg-slate-800 hover:bg-red-500/20 hover:text-red-500 rounded-xl transition-all">
             <LogOut className="w-5 h-5" />
           </button>
         </div>
       </header>
+
+      {/* Mobile Search Bar */}
+      <AnimatePresence>
+        {isSearching && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="md:hidden bg-slate-900 border-b border-white/5 overflow-hidden"
+          >
+            <div className="p-4">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                <input 
+                  autoFocus
+                  type="text"
+                  placeholder="Pesquisar global..."
+                  className="w-full bg-slate-950/50 border border-white/5 rounded-xl py-3 pl-12 pr-12 outline-none focus:ring-2 focus:ring-orange-500/50 text-white text-base"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                {searchQuery && (
+                  <button 
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-white/10 rounded-lg"
+                  >
+                    <X className="w-4 h-4 text-slate-500" />
+                  </button>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="flex flex-1 overflow-hidden pb-20 md:pb-0">
         {/* Sidebar - Desktop Only */}
