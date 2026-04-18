@@ -25,21 +25,28 @@ async function startServer() {
 
     try {
       const response = await axios.get(targetUrl, {
-        timeout: 30000,
+        timeout: 60000, // Increase timeout to 60s for large lists
         responseType: 'text',
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
         headers: { 
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-          'Accept': '*/*' 
+          'Accept': '*/*',
+          'Connection': 'keep-alive'
         },
-        httpsAgent
+        httpsAgent,
+        validateStatus: (status) => status < 500 // Allow 4xx so we can handle them
       });
+
+      if (response.status >= 400) {
+        return res.status(response.status).json({ error: `Servidor retornou erro ${response.status}` });
+      }
       
-      // If the content is M3U, we might want to ensure it's served as text/plain or application/mpegurl
       res.setHeader('Content-Type', 'text/plain; charset=utf-8');
       res.send(response.data);
     } catch (error: any) {
       console.error("Proxy error:", error.message);
-      res.status(502).json({ error: "Erro no proxy", details: error.message });
+      res.status(502).json({ error: "Erro na conexão com o servidor IPTV", details: error.message });
     }
   });
 

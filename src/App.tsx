@@ -100,7 +100,7 @@ export default function App() {
   };
 
   const parseM3U = (data: string): Channel[] => {
-    const lines = data.split("\n");
+    const lines = data.replace(/^\uFEFF/, "").split(/\r?\n/);
     const result: Channel[] = [];
     let currentChannel: Partial<Channel> = {};
     let channelCounter = 1;
@@ -161,18 +161,24 @@ export default function App() {
     }
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
     
     let finalM3uUrl = "";
     
     if (loginMode === "m3u") {
-      if (!m3uInput.trim()) return;
+      if (!m3uInput.trim()) {
+        setLoading(false);
+        return;
+      }
       finalM3uUrl = m3uInput.trim();
     } else {
       const { server, username, password } = xtreamForm;
       if (!server || !username || !password) {
         setError("Preencha todos os campos do Xtream Codes.");
+        setLoading(false);
         return;
       }
       
@@ -184,15 +190,35 @@ export default function App() {
         serverUrl = serverUrl.slice(0, -1);
       }
       
-      // Using output=m3u8 for better browser compatibility (HLS)
-      finalM3uUrl = `${serverUrl}/get.php?username=${username.trim()}&password=${password.trim()}&type=m3u_plus&output=m3u8`;
+      try {
+        // Pre-validate with Xtream API
+        const authUrl = `/api/proxy-m3u?url=${encodeURIComponent(`${serverUrl}/player_api.php?username=${username.trim()}&password=${password.trim()}`)}`;
+        const authRes = await fetch(authUrl);
+        const authData = await authRes.json();
+        
+        if (authData.user_info && authData.user_info.auth === 0) {
+          throw new Error("Usuário ou senha inválidos no Xtream Codes.");
+        }
+        
+        if (!authData.user_info) {
+          console.warn("Server didn't return standard Xtream JSON, trying M3U download directly...");
+        }
+
+        // Standard Xtream get.php URL
+        finalM3uUrl = `${serverUrl}/get.php?username=${username.trim()}&password=${password.trim()}&type=m3u_plus&output=m3u8`;
+      } catch (err: any) {
+        setError(err.message || "Erro ao conectar com o servidor Xtream.");
+        setLoading(false);
+        return;
+      }
     }
     
     const user: UserData = { m3uUrl: finalM3uUrl };
+    localStorage.setItem("iptv_session_v3", JSON.stringify(user));
     setUserData(user);
     setIsLoggedIn(true);
-    localStorage.setItem("iptv_session_v3", JSON.stringify(user));
-    fetchChannels(user.m3uUrl);
+    await fetchChannels(user.m3uUrl);
+    setLoading(false);
   };
 
   const logout = () => {
@@ -492,10 +518,15 @@ export default function App() {
 
             <button
               type="submit"
-              className="w-full py-5 bg-orange-500 hover:bg-orange-600 text-white font-black text-lg uppercase tracking-widest rounded-3xl shadow-xl shadow-orange-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-4 group"
+              disabled={loading}
+              className={`w-full py-5 bg-orange-500 hover:bg-orange-600 text-white font-black text-lg uppercase tracking-widest rounded-3xl shadow-xl shadow-orange-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-4 group ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
-              <Play className="w-6 h-6 group-hover:scale-110 transition-transform" />
-              ENTRAR NO PLAYER
+              {loading ? (
+                <RefreshCw className="w-6 h-6 animate-spin" />
+              ) : (
+                <Play className="w-6 h-6 group-hover:scale-110 transition-transform" />
+              )}
+              {loading ? "VERIFICANDO..." : "ENTRAR NO PLAYER"}
             </button>
           </form>
 
@@ -516,15 +547,18 @@ export default function App() {
                     password: "325182736"
                   });
                 }}
+                disabled={loading}
                 className="py-3 px-4 bg-slate-800/40 hover:bg-slate-800/60 text-slate-400 hover:text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all border border-white/5 flex items-center justify-center gap-2"
               >
                 Preencher Demo
               </button>
               <button 
                 onClick={() => {
+                  // Simply toggle a test loading state to see the nice TV animation
                   setLoading(true);
                   setTimeout(() => setLoading(false), 3000);
                 }}
+                disabled={loading}
                 className="py-3 px-4 bg-orange-500/5 hover:bg-orange-500/10 text-orange-500/60 hover:text-orange-500 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all border border-orange-500/10 flex items-center justify-center gap-2"
               >
                 Testar Loading
