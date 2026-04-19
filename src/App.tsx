@@ -90,24 +90,54 @@ export default function App() {
   };
 
   const categorizeChannel = (channel: Channel): "live" | "movies" | "series" => {
-    const group = channel.group.toUpperCase();
-    const name = channel.name.toUpperCase();
-    const url = channel.url.toLowerCase();
+    const group = channel.group ? channel.group.toUpperCase() : "";
+    const name = channel.name ? channel.name.toUpperCase() : "";
+    const url = channel.url ? channel.url.toLowerCase() : "";
     
-    if (group.includes("SERIE") || group.includes("SÉRIE") || url.includes("/series/")) return "series";
-    if (group.includes("FILME") || group.includes("MOVIE") || url.includes("/movie/")) return "movies";
+    // Series detection
+    if (
+      group.includes("SERIE") || 
+      group.includes("SÉRIE") || 
+      group.includes("SERIES") || 
+      group.includes("SEASON") ||
+      group.includes("TEMPORADA") ||
+      url.includes("/series/") ||
+      url.includes("/xmltv.php?type=series")
+    ) return "series";
+    
+    // Movies detection
+    if (
+      group.includes("FILME") || 
+      group.includes("MOVIE") || 
+      group.includes("MOVIES") || 
+      group.includes("VOD") ||
+      group.includes("FILMES") ||
+      group.includes("V.O.D") ||
+      url.includes("/movie/") ||
+      url.includes("/xmltv.php?type=movie")
+    ) return "movies";
+    
+    // Default to Live
     return "live";
   };
 
   const parseM3U = (data: string): Channel[] => {
+    // Handle cases where the response might be JSON instead of M3U
+    if (data.trim().startsWith('{') || data.trim().startsWith('[')) {
+      console.error("Server returned JSON instead of M3U list.");
+      return [];
+    }
+
     const lines = data.replace(/^\uFEFF/, "").split(/\r?\n/);
     const result: Channel[] = [];
     let currentChannel: Partial<Channel> = {};
     let channelCounter = 1;
 
-    const nameRegex = /,(.*)$/;
+    const infoRegex = /#EXTINF:[-0-9]*\s*(.*),(.*)$/; // More tolerant regex
+    const nameRegex = /,(.*)$/; // Fallback name regex
     const groupRegex = /group-title="(.*?)"/;
     const logoRegex = /tvg-logo="(.*?)"/;
+    const idRegex = /tvg-id="(.*?)"/;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
@@ -118,12 +148,19 @@ export default function App() {
         const groupMatch = line.match(groupRegex);
         const logoMatch = line.match(logoRegex);
         
-        currentChannel.name = nameMatch ? nameMatch[1].trim() : "Canal";
+        currentChannel.name = nameMatch ? nameMatch[1].trim() : "Canal Indisponível";
         currentChannel.group = groupMatch ? groupMatch[1] : "Geral";
         currentChannel.logo = logoMatch ? logoMatch[1] : undefined;
       } else if (line.startsWith("http")) {
         currentChannel.url = line;
         const channel = currentChannel as Channel;
+        
+        // Ensure name is cleaned from any leftovers
+        if (channel.name && channel.name.includes("#EXTINF")) {
+           const parts = channel.name.split(",");
+           channel.name = parts[parts.length - 1].trim();
+        }
+
         channel.category = categorizeChannel(channel);
         if (channel.category === "live") channel.number = channelCounter++;
         result.push(channel);
@@ -204,8 +241,8 @@ export default function App() {
           console.warn("Server didn't return standard Xtream JSON, trying M3U download directly...");
         }
 
-        // Standard Xtream get.php URL
-        finalM3uUrl = `${serverUrl}/get.php?username=${username.trim()}&password=${password.trim()}&type=m3u_plus&output=m3u8`;
+        // Standard Xtream get.php URL - Using ts output for better M3U generation compatibility
+        finalM3uUrl = `${serverUrl}/get.php?username=${username.trim()}&password=${password.trim()}&type=m3u_plus&output=ts`;
       } catch (err: any) {
         setError(err.message || "Erro ao conectar com o servidor Xtream.");
         setLoading(false);
@@ -733,46 +770,54 @@ export default function App() {
           {/* Grid */}
           <div className="flex-1 overflow-y-auto p-4 md:p-6 pt-0 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 md:gap-6 pb-24 md:pb-6">
             <AnimatePresence mode="popLayout">
-              {filteredChannels.slice(0, visibleCount).map((channel, idx) => (
-                <motion.div
-                  key={channel.url + idx}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  whileHover={{ y: -5 }}
-                  onClick={() => setSelectedChannel(channel)}
-                  className={`group relative aspect-[2/3] rounded-3xl overflow-hidden cursor-pointer border-2 transition-all ${
-                    selectedChannel?.url === channel.url ? "border-orange-500 shadow-2xl shadow-orange-500/20" : "border-transparent hover:border-white/20"
-                  }`}
-                >
-                  <img 
-                    src={channel.logo || `https://picsum.photos/seed/${channel.name}/300/450`}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    alt={channel.name}
-                    referrerPolicy="no-referrer"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
-                  
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <p className="text-xs font-bold text-orange-500 mb-1 uppercase tracking-wider truncate">{channel.group}</p>
-                    <h3 className="font-black text-sm leading-tight line-clamp-2">{channel.name}</h3>
-                  </div>
-
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleFavorite(channel.url);
-                    }}
-                    className={`absolute top-3 right-3 p-2 rounded-xl backdrop-blur-md transition-all ${
-                      favorites.includes(channel.url) ? "bg-red-500 text-white" : "bg-black/40 text-white/50 hover:text-white"
+              {filteredChannels.length > 0 ? (
+                filteredChannels.slice(0, visibleCount).map((channel, idx) => (
+                  <motion.div
+                    key={channel.url + idx}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    whileHover={{ y: -5 }}
+                    onClick={() => setSelectedChannel(channel)}
+                    className={`group relative aspect-[2/3] rounded-3xl overflow-hidden cursor-pointer border-2 transition-all ${
+                      selectedChannel?.url === channel.url ? "border-orange-500 shadow-2xl shadow-orange-500/20" : "border-transparent hover:border-white/20"
                     }`}
                   >
-                    <Zap className="w-4 h-4" />
-                  </button>
-                </motion.div>
-              ))}
+                    <img 
+                      src={channel.logo || `https://picsum.photos/seed/${channel.name}/300/450`}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      alt={channel.name}
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
+                    
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <p className="text-xs font-bold text-orange-500 mb-1 uppercase tracking-wider truncate">{channel.group}</p>
+                      <h3 className="font-black text-sm leading-tight line-clamp-2">{channel.name}</h3>
+                    </div>
+
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavorite(channel.url);
+                      }}
+                      className={`absolute top-3 right-3 p-2 rounded-xl backdrop-blur-md transition-all ${
+                        favorites.includes(channel.url) ? "bg-red-500 text-white" : "bg-black/40 text-white/50 hover:text-white"
+                      }`}
+                    >
+                      <Zap className="w-4 h-4" />
+                    </button>
+                  </motion.div>
+                ))
+              ) : (
+                <div className="col-span-full py-20 flex flex-col items-center justify-center text-slate-700">
+                  <ZapOff className="w-16 h-16 mb-4 opacity-20" />
+                  <p className="text-xl font-black uppercase tracking-widest opacity-30">Nenhum conteúdo encontrado</p>
+                  <p className="text-sm font-medium mt-2">Tente mudar o grupo ou a categoria abaixo.</p>
+                </div>
+              )}
             </AnimatePresence>
             
             {filteredChannels.length > visibleCount && (
