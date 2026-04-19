@@ -92,15 +92,19 @@ export default function App() {
   const categorizeChannel = (channel: Channel): "live" | "movies" | "series" => {
     const group = channel.group ? channel.group.toUpperCase() : "";
     const name = channel.name ? channel.name.toUpperCase() : "";
-    const url = channel.url ? channel.url.toLowerCase() : "";
+    const url = (channel.url || "").toLowerCase();
     
-    // Series detection
+    // Series detection - very common patterns in IPTV lists
     if (
       group.includes("SERIE") || 
       group.includes("SÉRIE") || 
       group.includes("SERIES") || 
       group.includes("SEASON") ||
       group.includes("TEMPORADA") ||
+      group.includes("NETFLIX") ||
+      group.includes("DISNEY+") ||
+      group.includes("HBO") ||
+      group.includes("SÉRIES") ||
       url.includes("/series/") ||
       url.includes("/xmltv.php?type=series")
     ) return "series";
@@ -113,58 +117,73 @@ export default function App() {
       group.includes("VOD") ||
       group.includes("FILMES") ||
       group.includes("V.O.D") ||
+      group.includes("CINEMA") ||
+      group.includes("Lançamento") ||
       url.includes("/movie/") ||
       url.includes("/xmltv.php?type=movie")
     ) return "movies";
     
-    // Default to Live
+    // If it's anything else, it's likely a Live channel
     return "live";
   };
 
   const parseM3U = (data: string): Channel[] => {
-    // Handle cases where the response might be JSON instead of M3U
+    if (!data || typeof data !== 'string') return [];
+    
+    // Check if it's JSON (sometimes Xtream returns JSON even when M3U is requested)
     if (data.trim().startsWith('{') || data.trim().startsWith('[')) {
-      console.error("Server returned JSON instead of M3U list.");
+      console.warn("Server returned JSON instead of M3U.");
       return [];
     }
 
     const lines = data.replace(/^\uFEFF/, "").split(/\r?\n/);
     const result: Channel[] = [];
-    let currentChannel: Partial<Channel> = {};
+    let currentChannel: Partial<Channel> = { group: "Geral" };
     let channelCounter = 1;
-
-    const infoRegex = /#EXTINF:[-0-9]*\s*(.*),(.*)$/; // More tolerant regex
-    const nameRegex = /,(.*)$/; // Fallback name regex
-    const groupRegex = /group-title="(.*?)"/;
-    const logoRegex = /tvg-logo="(.*?)"/;
-    const idRegex = /tvg-id="(.*?)"/;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
       if (!line) continue;
 
       if (line.startsWith("#EXTINF:")) {
-        const nameMatch = line.match(nameRegex);
-        const groupMatch = line.match(groupRegex);
-        const logoMatch = line.match(logoRegex);
+        // Extract group, logo and name using more robust matching
+        const groupMatch = line.match(/group-title="(.*?)"/i);
+        const logoMatch = line.match(/tvg-logo="(.*?)"/i);
+        const nameMatch = line.match(/,(.*)$/);
         
-        currentChannel.name = nameMatch ? nameMatch[1].trim() : "Canal Indisponível";
-        currentChannel.group = groupMatch ? groupMatch[1] : "Geral";
-        currentChannel.logo = logoMatch ? logoMatch[1] : undefined;
-      } else if (line.startsWith("http")) {
+        if (groupMatch) currentChannel.group = groupMatch[1];
+        if (logoMatch) currentChannel.logo = logoMatch[1];
+        if (nameMatch) currentChannel.name = nameMatch[1].trim();
+      } 
+      else if (line.startsWith("#EXTGRP:")) {
+        // Support for older/different M3U formats
+        const group = line.replace("#EXTGRP:", "").trim();
+        if (group) currentChannel.group = group;
+      }
+      else if (line.startsWith("http")) {
         currentChannel.url = line;
-        const channel = currentChannel as Channel;
         
-        // Ensure name is cleaned from any leftovers
-        if (channel.name && channel.name.includes("#EXTINF")) {
-           const parts = channel.name.split(",");
-           channel.name = parts[parts.length - 1].trim();
+        // Final fallback for missing name (use URL filename)
+        if (!currentChannel.name || currentChannel.name.includes("#EXTINF")) {
+          const parts = line.split("/");
+          const lastPart = parts[parts.length - 1];
+          currentChannel.name = lastPart.split(".")[0] || "Canal " + channelCounter;
         }
+
+        const channel = {
+          name: currentChannel.name || "Canal",
+          group: currentChannel.group || "Geral",
+          logo: currentChannel.logo,
+          url: currentChannel.url,
+          category: "live",
+          number: 0
+        } as Channel;
 
         channel.category = categorizeChannel(channel);
         if (channel.category === "live") channel.number = channelCounter++;
+        
         result.push(channel);
-        currentChannel = {};
+        currentChannel = { group: "Geral" }; // Reset with default group
       }
     }
     return result;
@@ -617,7 +636,13 @@ export default function App() {
           </div>
           <div>
             <h1 className="text-lg md:text-xl font-black tracking-tighter uppercase">D7 Web Player</h1>
-            <p className="text-[8px] md:text-[10px] text-slate-500 font-bold tracking-[0.2em] uppercase">{activeSection}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-[8px] md:text-[10px] text-slate-500 font-bold tracking-[0.2em] uppercase">{activeSection}</p>
+              <div className="w-1 h-1 rounded-full bg-slate-700" />
+              <p className="text-[8px] md:text-[10px] text-orange-500 font-bold tracking-[0.1em] uppercase">
+                {channels.length} Itens Carregados
+              </p>
+            </div>
           </div>
         </div>
 
@@ -814,8 +839,12 @@ export default function App() {
               ) : (
                 <div className="col-span-full py-20 flex flex-col items-center justify-center text-slate-700">
                   <ZapOff className="w-16 h-16 mb-4 opacity-20" />
-                  <p className="text-xl font-black uppercase tracking-widest opacity-30">Nenhum conteúdo encontrado</p>
-                  <p className="text-sm font-medium mt-2">Tente mudar o grupo ou a categoria abaixo.</p>
+                  <p className="text-xl font-black uppercase tracking-widest opacity-30">Nenhum conteúdo nesta aba</p>
+                  <p className="text-sm font-medium mt-2 text-center max-w-xs">
+                    {channels.length > 0 
+                      ? `Encontramos ${channels.length} itens no total, mas nenhum na categoria "${activeSection.toUpperCase()}". Tente as abas FILMES ou SÉRIES abaixo.`
+                      : "Sua lista parece estar vazia ou o servidor não enviou os dados. Verifique sua conta."}
+                  </p>
                 </div>
               )}
             </AnimatePresence>
